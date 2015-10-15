@@ -32,6 +32,9 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='UDP Sender')
     parser.add_argument('-p', '--port', type=int, default=9001, help='Port')
+    parser.add_argument('cwnd', help='Window size')
+    parser.add_argument('PL', type=float, help='Packet Loss probability')
+    parser.add_argument('PC', type=float, help='Packet Corruption probability')
     parser.add_argument('--version', action='version',
                         version='%(prog)s v' + __version__)
     args = parser.parse_args()

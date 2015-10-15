@@ -35,8 +35,8 @@ if __name__ == "__main__":
     parser.add_argument('hostname', help='Sender hostname')
     parser.add_argument('port', type=int, help='Sender port')
     parser.add_argument('filename', help='Filename')
-    parser.add_argument('PL', help='Packet Loss')
-    parser.add_argument('PC', help='Packet Corruption')
+    parser.add_argument('PL', type=float, help='Packet Loss probability')
+    parser.add_argument('PC', type=float, help='Packet Corruption probability')
     parser.add_argument('--version', action='version',
                         version='%(prog)s v' + __version__)
     args = parser.parse_args()
