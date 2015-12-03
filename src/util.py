@@ -103,7 +103,7 @@ def corrompe_pacote(pacote, probabilidade=1):
 
 
 
-def envia_dados(dados, pacotes, socket, host, porta, window):
+def envia_pacotes(socket, pacotes, host, porta, window):
     ultimo_sem_ack = 0;
     sem_ack = 0
 
@@ -116,9 +116,9 @@ def envia_dados(dados, pacotes, socket, host, porta, window):
             # Listen for ACKs
             pronto = select.select([socket], [], [], TIMEOUT)
             if pronto[0]:
-                pkt_recv_raw, addr = socket.recvfrom(4096)
+                dado, addr = socket.recvfrom(4096)
             else:  # Window is full and no ACK received before timeout
-                print "Timeout, sequence number =", ultimo_sem_ack
+                print "Timeout, seq num =", ultimo_sem_ack
                 sem_ack = 0
                 continue
 
@@ -126,15 +126,15 @@ def envia_dados(dados, pacotes, socket, host, porta, window):
             if addr[0] != host:
                 continue
 
-            # Decode packet
-            pkt_recv = processa_pac_ack(pkt_recv_raw)
+            # Decodifica dados
+            pacote = processa_pac_ack(dado)
 
             # Confirm that pkt is indeed an ACK
-            if pkt_recv.pkt_type != TIPO_ACK:
+            if pacote.tipo != TIPO_ACK:
                 continue
 
             # If this is the pkt you're looking for
-            if pkt_recv.seq_num == ultimo_sem_ack:
+            if pacote.num == ultimo_sem_ack:
                 ultimo_sem_ack += 1
                 sem_ack -= 1
             else:
