@@ -30,6 +30,7 @@ TIPO_DADO = 0b0101010101010101
 TIPO_NOME = 0b0000000011111111
 TIPO_ACK = 0b1010101010101010
 MSS = 2000
+TIMEOUT = 5
 HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 
 pacote = namedtuple("pacote", ["num", "sum", "tipo", "data", "acked"])
