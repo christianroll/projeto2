@@ -8,6 +8,7 @@ Util functions
 
 import binascii
 from collections import namedtuple
+from struct import unpack
 
 __authors__ = (
     'Christian Rollmann',
@@ -23,8 +24,8 @@ TIPO_ACK = 0b1010101010101010
 MSS = 2000
 HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 
-
 pacote = namedtuple("pacote", ["num", "sum", "tipo", "data", "acked"])
+ack = namedtuple("pacote", ["num", "sum", "tipo"])
 
 
 def crc32(data):
@@ -47,3 +48,8 @@ def cria_pacotes(dados):
         num += 1
 
     return pacotes
+
+def parse_ack(dado):
+    # Converda dados para o tipo pacote ack a ser utilizado
+    pac_ack = ack._make(unpack('iHH', dado))
+    return pac_ack
