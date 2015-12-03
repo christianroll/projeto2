@@ -5,15 +5,20 @@
 
 """
 UDP Receiver
+
+Resquests a file from sender
+Waits to receive all packets
 """
 
 
-from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 import argparse
 import sys
+
+import socket
+from util import crc32 as checksum
 
 
 __authors__ = (
@@ -26,7 +31,49 @@ __license__ = "GPL v3"
 __version__ = "1.0"
 
 
+# Receiver UDP port
+RCV_PORT = 9001
+
+# MSS: Maximum segment size
+MSS = 2000
+
+
+
 def main(args):
+
+    # Receiver opens UDP socket
+    try:
+        rcv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        rcv_sock.bind('', RCV_PORT)
+    except socket.error:
+        print("Failed to open UDP socket")
+        sys.exit(1)
+
+    rcv_sock.timeout(10)
+
+    # Request the file "filename" from Sender
+    rcv_sock.sendto(args.filename, (args.hostname, args.port))
+
+    # The sender returns if the file exists
+    data, addr = rcv_sock.recvfrom(MSS)
+
+    # If the file exists, start receiving from sender
+    with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
+        seq_num = 0
+        try:
+            while True:
+                data, addr = rcv_sock.recvfrom(MSS)
+
+                # File completely received
+                if (data == "EOF"):
+                    print("DEBUG: File received")
+                    rcv_sock.close()
+                    break
+
+        except socket.error:
+            print("Socket error")
+            continue
+
     return 0
 
 
