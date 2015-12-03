@@ -89,7 +89,7 @@ def envia_ack(sock, num, host, porta):
 
 
 # Envia pacote para o servidor
-def envia_pacote(sock, pacote, host, porta):
+def envia_um_pacote(sock, pacote, host, porta):
     # Primeiro gera o dado a ser enviado
     dado = pack('iHH' + str(len(pacote.data)) + 's', pacote.num, int(pacote.sum), pacote.tipo, pacote.data)
     sock.sendto(dado, (host, porta))
@@ -102,14 +102,14 @@ def corrompe_pacote(pacote, probabilidade=1):
         pacote.data = pacote.data[::-1]
     return pacote
 
-
+# Envia pacotes utilizando a funcao envia_um_pacote
 def envia_pacotes(sock, pacotes, host, porta, window):
     ultimo_sem_ack = 0
     sem_ack = 0
 
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
-            envia_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
+            envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
             sem_ack += 1
             continue
         else:
@@ -137,12 +137,12 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 sem_ack = 0
                 continue
 
-
+# Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
-    envia_pacote(cria_pacotes('', tipo=TIPO_EOF))
+    envia_um_pacote(cria_pacotes('', tipo=TIPO_EOF))
 
-
+# Funcao para receber dados
 def recebe_dados(sock, host, porta):
     while True:
         data, addr = sock.recvfrom(MSS)
