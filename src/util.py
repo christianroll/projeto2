@@ -103,7 +103,7 @@ def corrompe_pacote(pacote, probabilidade=1):
 
 
 
-def enfia_dados(dados, pacotes, socket, host, porta, window):
+def envia_dados(dados, pacotes, socket, host, porta, window):
     ultimo_sem_ack = 0;
     sem_ack = 0
 
