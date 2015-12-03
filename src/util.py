@@ -119,7 +119,7 @@ def envia_dados(dados, pacotes, socket, host, porta, window):
                 pkt_recv_raw, addr = socket.recvfrom(4096)
             else:  # Window is full and no ACK received before timeout
                 print "Timeout, sequence number =", ultimo_sem_ack
-                unacked = 0
+                sem_ack = 0
                 continue
 
             # Confirm that pkt is from the server
