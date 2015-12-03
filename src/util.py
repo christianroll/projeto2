@@ -8,6 +8,7 @@ Util functions
 
 import binascii
 from collections import namedtuple
+from struct import pack
 from struct import unpack
 
 __authors__ = (
@@ -21,7 +22,7 @@ __version__ = "1.0"
 
 TIPO_DADO = 0b0101010101010101
 TIPO_NOME = 0b0000000011111111
-TIPO_ACK =  0b1010101010101010
+TIPO_ACK = 0b1010101010101010
 MSS = 2000
 HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 
@@ -50,14 +51,21 @@ def cria_pacotes(dados):
 
     return pacotes
 
+
+# Processa pacote ACK para o tipo a ser usados no programa
 def processa_pac_ack(dado):
     # Converte dados para o tipo pacote ack a ser utilizado
     pac_ack = ack._make(unpack('iHH', dado))
     return pac_ack
 
+# Processa pacote de dados para tipos a serem usados no programa
 def processa_pacote(dado):
     # Converte dados para o tipo pacote a ser utilizado no programa
     novo_pacote = pacote._make(unpack('iHH' + str(len(dado) - HEADER_LEN) + 's', dado) + (False,))
     return novo_pacote
 
-
+# Envia pacote to tipo ACK para a maquina, usando o socket
+def envia_ack(socket, num, host, porta):
+    # Primeiro cria o pacote ACK
+    raw_ack = pack('iHH', num, 0, TIPO_ACK)
+    socket.sendto(raw_ack, (host, porta))
