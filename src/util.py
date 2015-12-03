@@ -85,7 +85,7 @@ def processa_pacote(dado):
 # Envia pacote to tipo ACK para a maquina, usando o socket
 def envia_ack(sock, num, host, porta):
     # Primeiro cria o pacote ACK
-    dado = pack('iIH', num, 0, TIPO_ACK)
+    dado = pack('iHH', num, 0, TIPO_ACK)
     sock.sendto(dado, (host, porta))
 
 
