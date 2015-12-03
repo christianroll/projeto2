@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 import argparse
 import sys
 import socket
-from util import crc32 as checksum
+from util import crc32 as checksum, recebe_dados
 import os
 
 
@@ -38,12 +38,11 @@ def main(args):
     try:
         sdr_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sdr_sock.bind(("", args.port))
-        print "waiting on port:", port
-        data, addr = sdr_sock.recvfrom(MSS)
-        #TODO: verificacao do checksum
-        envia_ack(9001, num, host, porta)
-        filename = processa_pacote(data)
-        if (os.path.isfile(filename)):
+        print("waiting on port: {} ".format(args.port))
+        filename = recebe_dados(sdr_sock)
+        print("Nome do arquivo: {}".format(filename))
+
+        '''if (os.path.isfile(filename)):
             # If the file exists, start receiving from sender
             with open(filename + "_rcvd", mode="wd") as sdr_file:
                 pkt = cria_pacotes(sdr_file.read())
@@ -54,16 +53,10 @@ def main(args):
             except socket.error:
                 print("Socket error")
                 continue
-            
-           
-
-
-
-
 
 
         else:
-            print "Não existe arquivo"
+            print ("Não existe arquivo")''' 
 
     except socket.error:
         print("Failed to open UDP socket")

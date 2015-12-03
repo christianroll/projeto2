@@ -146,7 +146,7 @@ def envia_dados(dados, tipo, sock, host, porta, window):
 
 
 # Funcao para receber dados
-def recebe_dados(sock, host, porta):
+def recebe_dados(sock):
     pkt = pacote()
     dados = ''
 
