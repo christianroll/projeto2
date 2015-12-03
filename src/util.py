@@ -78,21 +78,21 @@ def processa_pac_ack(dado):
 # Processa pacote de dados para tipos a serem usados no programa
 def processa_pacote(dado):
     # Converte dados para o tipo pacote a ser utilizado no programa
-    novo_pacote = pacote._make(unpack('iHH' + str(len(dado) - HEADER_LEN) + 's', dado) + (False,))
+    novo_pacote = pacote._make(unpack('iIH' + str(len(dado) - HEADER_LEN) + 's', dado) + (False,))
     return novo_pacote
 
 
 # Envia pacote to tipo ACK para a maquina, usando o socket
 def envia_ack(sock, num, host, porta):
     # Primeiro cria o pacote ACK
-    dado = pack('iHH', num, 0, TIPO_ACK)
+    dado = pack('iIH', num, 0, TIPO_ACK)
     sock.sendto(dado, (host, porta))
 
 
 # Envia pacote para o servidor
 def envia_um_pacote(sock, pkt, host, porta):
     # Primeiro gera o dado a ser enviado
-    dado = pack('iHH' + str(len(pkt.data)) + 's', pkt.num, int(pkt.sum), pkt.tipo, pkt.data)
+    dado = pack('iIH' + str(len(pkt.data)) + 's', pkt.num, int(pkt.sum), pkt.tipo, pkt.data)
     sock.sendto(dado, (host, porta))
 
 
@@ -113,12 +113,11 @@ def envia_pacotes(sock, pacotes, host, porta, window):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
             envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
             sem_ack += 1
-            continue
         else:
             # Listen for ACKs
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
-                dado, addr = sock.recvfrom(4096)
+                dado, addr = sock.recvfrom(MSS)
             else:  # Window is full and no ACK received before timeout
                 print "Timeout, seq num =", ultimo_sem_ack
                 sem_ack = 0
@@ -127,7 +126,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             if addr[0] != host:
                 continue
             # Decodifica dados
-            pkt = processa_pac_ack(dado)
+            pkt = processa_pacote(dado)
             # Confirma se o pacote é mesmo oum pacote ack
             if pkt.tipo != TIPO_ACK:
                 continue
@@ -137,7 +136,6 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 sem_ack -= 1
             else:
                 sem_ack = 0
-                continue
 
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
