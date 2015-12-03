@@ -18,7 +18,7 @@ import argparse
 import sys
 
 import socket
-from util import MSS, RCV_PORT, envia_dados, recebe_dados
+from util import MSS, RCV_PORT, envia_dados, recebe_dados, TIPO_DADO, TIPO_NOME
 
 
 __authors__ = (
@@ -45,7 +45,7 @@ def main(args):
     rcv_sock.settimeout(10)
 
     # Request the file "filename" from Sender
-    envia_dados(args.filename, rcv_sock, args.hostname, args.port, RCV_CWND)
+    envia_dados(args.filename, TIPO_NOME, rcv_sock, args.hostname, args.port, RCV_CWND)
 
     # If the file exists, start receiving from sender
     dados = recebe_dados(rcv_sock, args.hostname, args.port)
