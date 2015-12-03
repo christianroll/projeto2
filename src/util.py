@@ -40,7 +40,7 @@ def crc32(data):
     return "%08X" % buf
 
 
-# Cria pacotes para serem enviados
+# Cria *uma lista* de pacotes para serem enviados
 # O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN".
 # A função `min` é utilizada para quando último pacote for menor que esse valor
 def cria_pacotes(dados, tipo=TIPO_DADO):
