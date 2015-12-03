@@ -18,7 +18,7 @@ import argparse
 import sys
 
 import socket
-from util import MSS, RCV_PORT, envia_dados
+from util import MSS, RCV_PORT, envia_dados, recebe_dados
 
 
 __authors__ = (
@@ -47,25 +47,12 @@ def main(args):
     # Request the file "filename" from Sender
     envia_dados(args.filename, rcv_sock, args.hostname, args.port, RCV_CWND)
 
-    # The sender returns if the file exists
-    data, addr = rcv_sock.recvfrom(MSS)
-
     # If the file exists, start receiving from sender
+    dados = recebe_dados(rcv_sock, args.hostname, args.port)
+
+    # Escreve dados em um arquivo
     with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
-        seq_num = 0
-        try:
-            while True:
-                data, addr = rcv_sock.recvfrom(MSS)
-
-                # File completely received
-                if (data == "EOF"):
-                    print("DEBUG: File received")
-                    rcv_sock.close()
-                    break
-
-        except socket.error:
-            print("Socket error")
-            continue
+        rcvd_file.write(dados)
 
     return 0
 
