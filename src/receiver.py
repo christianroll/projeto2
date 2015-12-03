@@ -18,7 +18,7 @@ import argparse
 import sys
 
 import socket
-from util import MSS, crc32 as checksum
+from util import MSS, RCV_PORT, crc32 as checksum
 
 
 __authors__ = (
@@ -29,10 +29,6 @@ __authors__ = (
               )
 __license__ = "GPL v3"
 __version__ = "1.0"
-
-
-# Receiver UDP port
-RCV_PORT = 9001
 
 
 def main(args):
