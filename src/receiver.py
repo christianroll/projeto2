@@ -18,7 +18,7 @@ import argparse
 import sys
 
 import socket
-from util import MSS, RCV_PORT, crc32 as checksum
+from util import MSS, RCV_PORT, envia_dados
 
 
 __authors__ = (
@@ -30,6 +30,7 @@ __authors__ = (
 __license__ = "GPL v3"
 __version__ = "1.0"
 
+RCV_CWND = 5
 
 def main(args):
 
@@ -44,7 +45,7 @@ def main(args):
     rcv_sock.timeout(10)
 
     # Request the file "filename" from Sender
-    rcv_sock.sendto(args.filename, (args.hostname, args.port))
+    envia_dados(args.filename, rcv_sock, args.hostname, args.port, RCV_CWND)
 
     # The sender returns if the file exists
     data, addr = rcv_sock.recvfrom(MSS)

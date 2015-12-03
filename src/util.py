@@ -140,3 +140,6 @@ def envia_pacotes(socket, pacotes, host, porta, window):
             else:
                 sem_ack = 0
                 continue
+
+def envia_dados(dados, tipo, socket, host, porta, window):
+    envia_pacotes(socket, cria_pacotes(dados, tipo), host, porta, window)
