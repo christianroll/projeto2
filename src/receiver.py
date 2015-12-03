@@ -49,6 +49,7 @@ def main(args):
 
     # If the file exists, start receiving from sender
     dados = recebe_dados(rcv_sock, args.hostname, args.port)
+    rcv_sock.close()
 
     # Escreve dados em um arquivo
     with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
