@@ -90,18 +90,18 @@ def envia_ack(sock, num, host, porta):
 
 
 # Envia pacote para o servidor
-def envia_um_pacote(sock, pacote, host, porta):
+def envia_um_pacote(sock, pkt, host, porta):
     # Primeiro gera o dado a ser enviado
-    dado = pack('iHH' + str(len(pacote.data)) + 's', pacote.num, int(pacote.sum), pacote.tipo, pacote.data)
+    dado = pack('iHH' + str(len(pkt.data)) + 's', pkt.num, int(pkt.sum), pkt.tipo, pkt.data)
     sock.sendto(dado, (host, porta))
 
 
 # Rotina para corromper o pacote
-def corrompe_pacote(pacote, probabilidade=1):
+def corrompe_pacote(pkt, probabilidade=1):
     r = random.random()
     if (r <= probabilidade):
-        pacote.data = pacote.data[::-1]
-    return pacote
+        pkt.data = pkt.data[::-1]
+    return pkt
 
 
 # Envia pacotes utilizando a funcao envia_um_pacote
@@ -127,12 +127,12 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             if addr[0] != host:
                 continue
             # Decodifica dados
-            pacote = processa_pac_ack(dado)
+            pkt = processa_pac_ack(dado)
             # Confirma se o pacote é mesmo oum pacote ack
-            if pacote.tipo != TIPO_ACK:
+            if pkt.tipo != TIPO_ACK:
                 continue
             # Verifica o seq num para ver se é mesmo o pacote mandado
-            if pacote.num == ultimo_sem_ack:
+            if pkt.num == ultimo_sem_ack:
                 ultimo_sem_ack += 1
                 sem_ack -= 1
             else:
