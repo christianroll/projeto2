@@ -7,6 +7,7 @@ Util functions
 """
 
 import binascii
+import random
 from collections import namedtuple
 from struct import pack
 from struct import unpack
@@ -88,6 +89,8 @@ def envia_pacote(socket, pacote, host, porta):
 
 
 # Rotina para corromper o pacote
-def corrompe_pacote(pacote):
-    pacote.data = pacote.data[::-1]
+def corrompe_pacote(pacote, probabilidade=1):
+    r = random.random()
+    if (r <= probabilidade):
+        pacote.data = pacote.data[::-1]
     return pacote
