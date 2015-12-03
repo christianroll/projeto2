@@ -82,17 +82,17 @@ def processa_pacote(dado):
 
 
 # Envia pacote to tipo ACK para a maquina, usando o socket
-def envia_ack(socket, num, host, porta):
+def envia_ack(sock, num, host, porta):
     # Primeiro cria o pacote ACK
     dado = pack('iHH', num, 0, TIPO_ACK)
-    socket.sendto(dado, (host, porta))
+    sock.sendto(dado, (host, porta))
 
 
 # Envia pacote para o servidor
-def envia_pacote(socket, pacote, host, porta):
+def envia_pacote(sock, pacote, host, porta):
     # Primeiro gera o dado a ser enviado
     dado = pack('iHH' + str(len(pacote.data)) + 's', pacote.num, int(pacote.sum), pacote.tipo, pacote.data)
-    socket.sendto(dado, (host, porta))
+    sock.sendto(dado, (host, porta))
 
 
 # Rotina para corromper o pacote
@@ -103,41 +103,45 @@ def corrompe_pacote(pacote, probabilidade=1):
     return pacote
 
 
-
-def envia_pacotes(socket, pacotes, host, porta, window):
-    ultimo_sem_ack = 0;
+def envia_pacotes(sock, pacotes, host, porta, window):
+    ultimo_sem_ack = 0
     sem_ack = 0
 
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
-            envia_pacote(socket, pacotes[ultimo_sem_ack + sem_ack], host, porta)
-            sem_ack += 1;
+            envia_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
+            sem_ack += 1
             continue
         else:
             # Listen for ACKs
-            pronto = select.select([socket], [], [], TIMEOUT)
+            pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
-                dado, addr = socket.recvfrom(4096)
+                dado, addr = sock.recvfrom(4096)
             else:  # Window is full and no ACK received before timeout
                 print "Timeout, seq num =", ultimo_sem_ack
                 sem_ack = 0
                 continue
-
-            # Confirm that pkt is from the server
+            # Confirma se o pacote é mesmo do servidor
             if addr[0] != host:
                 continue
-
             # Decodifica dados
             pacote = processa_pac_ack(dado)
-
-            # Confirm that pkt is indeed an ACK
+            # Confirma se o pacote é mesmo oum pacote ack
             if pacote.tipo != TIPO_ACK:
                 continue
-
-            # If this is the pkt you're looking for
+            # Verifica o seq num para ver se é mesmo o pacote mandado
             if pacote.num == ultimo_sem_ack:
                 ultimo_sem_ack += 1
                 sem_ack -= 1
             else:
                 sem_ack = 0
                 continue
+
+
+def envia_dados(dados, tipo, sock, host, porta, window):
+    envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
+
+
+def recebe_dados(sock, host, porta):
+    while True:
+        data, addr = sock.recvfrom(MSS)
