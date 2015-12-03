@@ -20,7 +20,7 @@ __version__ = "1.0"
 
 DATA_ID = 0b0101010101010101
 MSS = 2000
-HEADER_LEN = 8 # tamanho do cabecalho, crc + seq num
+HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 pkt = namedtuple("pkt", ["seq_num", "chk_sum", "pkt_type", "data", "acked"])
 
 
@@ -33,17 +33,14 @@ def crc32(data):
 def cria_pacotes(dados):
     num = 0;
     pacotes = []
-
-    enviado = 0
-    a_enviar = min(MSS - HEADER_LEN, len(dados) - enviado)
+    enviados = 0
+    a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
 
     while a_enviar > 0:
-        data = dados[enviado:enviado + a_enviar];
+        data = dados[enviados:enviados + a_enviar];
         pacotes.append(pkt(num=num, sum=crc32(data), tipo=DATA_ID, data=data, acked=False))
-        enviado += a_enviar
-        to_send = min(MSS - HEADER_LEN, len(dados) - enviado)
+        enviados += a_enviar
+        to_send = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
 
     return pacotes
-
-
