@@ -18,6 +18,7 @@ import argparse
 import sys
 
 import socket
+from util import *
 from util import crc32 as checksum
 
 
@@ -35,8 +36,6 @@ __version__ = "1.0"
 RCV_PORT = 9001
 
 # MSS: Maximum segment size
-MSS = 2000
-
 
 
 def main(args):

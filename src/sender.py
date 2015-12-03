@@ -14,7 +14,6 @@ from __future__ import unicode_literals
 import argparse
 import sys
 
-
 __authors__ = (
                 'Christian Rollmann',
                 'Isaac Mitsuaki Saito',
