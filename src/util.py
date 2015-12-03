@@ -8,6 +8,7 @@ Util functions
 
 import binascii
 import random
+import select
 from collections import namedtuple
 from struct import pack
 from struct import unpack
@@ -98,3 +99,43 @@ def corrompe_pacote(pacote, probabilidade=1):
     if (r <= probabilidade):
         pacote.data = pacote.data[::-1]
     return pacote
+
+
+
+def enfia_dados(dados, pacotes, socket, host, porta, window):
+    ultimo_sem_ack = 0;
+    sem_ack = 0
+
+    while ultimo_sem_ack < len(pacotes):
+        if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
+            envia_pacote(socket, pacotes[ultimo_sem_ack + sem_ack], host, porta)
+            sem_ack += 1;
+            continue
+        else:
+            # Listen for ACKs
+            pronto = select.select([socket], [], [], TIMEOUT)
+            if pronto[0]:
+                pkt_recv_raw, addr = socket.recvfrom(4096)
+            else:  # Window is full and no ACK received before timeout
+                print "Timeout, sequence number =", ultimo_sem_ack
+                unacked = 0
+                continue
+
+            # Confirm that pkt is from the server
+            if addr[0] != host:
+                continue
+
+            # Decode packet
+            pkt_recv = processa_pac_ack(pkt_recv_raw)
+
+            # Confirm that pkt is indeed an ACK
+            if pkt_recv.pkt_type != TIPO_ACK:
+                continue
+
+            # If this is the pkt you're looking for
+            if pkt_recv.seq_num == ultimo_sem_ack:
+                ultimo_sem_ack += 1
+                sem_ack -= 1
+            else:
+                sem_ack = 0
+                continue
