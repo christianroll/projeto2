@@ -140,6 +140,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
+    envia_pacote(cria_pacotes('', tipo=TIPO_EOF))
 
 
 def recebe_dados(sock, host, porta):
