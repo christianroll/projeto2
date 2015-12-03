@@ -120,19 +120,15 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 print "Timeout, seq num =", ultimo_sem_ack
                 sem_ack = 0
                 continue
-
-            # Confirm that pkt is from the server
+            # Confirma se o pacote é mesmo do servidor
             if addr[0] != host:
                 continue
-
             # Decodifica dados
             pacote = processa_pac_ack(dado)
-
-            # Confirm that pkt is indeed an ACK
+            # Confirma se o pacote é mesmo oum pacote ack
             if pacote.tipo != TIPO_ACK:
                 continue
-
-            # If this is the pkt you're looking for
+            # Verifica o seq num para ver se é mesmo o pacote mandado
             if pacote.num == ultimo_sem_ack:
                 ultimo_sem_ack += 1
                 sem_ack -= 1
