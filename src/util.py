@@ -20,7 +20,8 @@ __license__ = "GPL v3"
 __version__ = "1.0"
 
 TIPO_DADO = 0b0101010101010101
-TIPO_ACK = 0b1010101010101010
+TIPO_NOME = 0b0000000011111111
+TIPO_ACK =  0b1010101010101010
 MSS = 2000
 HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 
@@ -53,3 +54,6 @@ def parse_ack(dado):
     # Converda dados para o tipo pacote ack a ser utilizado
     pac_ack = ack._make(unpack('iHH', dado))
     return pac_ack
+
+
+
