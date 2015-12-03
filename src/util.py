@@ -35,16 +35,23 @@ def crc32(data):
     return "%08X" % buf
 
 
-### Cria pacotes para serem enviados
+# Cria pacotes para serem enviados
+# O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN".
+# A função `min` é utilizada para quando último pacote for menor que esse valor
 def cria_pacotes(dados):
-    num = 0;
+    num = 0
     pacotes = []
     enviados = 0
     a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
 
     while a_enviar > 0:
-        data = dados[enviados:enviados + a_enviar];
-        pacotes.append(pacote(num=num, sum=crc32(data), tipo=TIPO_DADO, data=data, acked=False))
+        data = dados[enviados:enviados + a_enviar]
+        pacotes.append(pacote(
+            num=num,            # Número de sequência
+            sum=crc32(data),    # Checksum
+            tipo=TIPO_DADO,     # DADO ou ACK em 16 bits
+            data=data,          # (MSS - HEADER_LEN) bytes de dados
+            acked=False))       # Se foi acked
         enviados += a_enviar
         a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
