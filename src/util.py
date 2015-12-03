@@ -18,7 +18,8 @@ __authors__ = (
 __license__ = "GPL v3"
 __version__ = "1.0"
 
-DATA_ID = 0b0101010101010101
+TIPO_DADO = 0b0101010101010101
+TIPO_ACK = 0b1010101010101010
 MSS = 2000
 HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 
@@ -40,7 +41,7 @@ def cria_pacotes(dados):
 
     while a_enviar > 0:
         data = dados[enviados:enviados + a_enviar];
-        pacotes.append(pacote(num=num, sum=crc32(data), tipo=DATA_ID, data=data, acked=False))
+        pacotes.append(pacote(num=num, sum=crc32(data), tipo=TIPO_DADO, data=data, acked=False))
         enviados += a_enviar
         a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
