@@ -38,7 +38,7 @@ def crc32(data):
 # Cria pacotes para serem enviados
 # O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN".
 # A função `min` é utilizada para quando último pacote for menor que esse valor
-def cria_pacotes(dados):
+def cria_pacotes(dados, tipo=TIPO_DADO):
     num = 0
     pacotes = []
     enviados = 0
@@ -49,7 +49,7 @@ def cria_pacotes(dados):
         pacotes.append(pacote(
             num=num,  # Número de sequência
             sum=crc32(data),  # Checksum
-            tipo=TIPO_DADO,  # DADO ou ACK em 16 bits
+            tipo=tipo,  # DADO ou ACK em 16 bits
             data=data,  # (MSS - HEADER_LEN) bytes de dados
             acked=False))  # Se foi acked
         enviados += a_enviar
@@ -79,14 +79,15 @@ def envia_ack(socket, num, host, porta):
     dado = pack('iHH', num, 0, TIPO_ACK)
     socket.sendto(dado, (host, porta))
 
+
 # Envia pacote para o servidor
 def envia_pacote(socket, pacote, host, porta):
     # Primeiro gera o dado a ser enviado
     dado = pack('iHH' + str(len(pacote.data)) + 's', pacote.num, int(pacote.sum), pacote.tipo, pacote.data)
     socket.sendto(dado, (host, porta))
 
+
 # Rotina para corromper o pacote
 def corrompe_pacote(pacote):
     pacote.data = pacote.data[::-1]
     return pacote
-
