@@ -37,7 +37,7 @@ def main(args):
     # Receiver opens UDP socket
     try:
         rcv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        rcv_sock.bind('', RCV_PORT)
+        rcv_sock.bind(('', RCV_PORT))
     except socket.error:
         print("Failed to open UDP socket")
         sys.exit(1)
