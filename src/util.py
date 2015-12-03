@@ -147,5 +147,19 @@ def envia_dados(dados, tipo, sock, host, porta, window):
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
-    while True:
+    pkt = pacote()
+    dados = ''
+
+    while (pkt.tipo is not TIPO_EOF):
         data, addr = sock.recvfrom(MSS)
+        pkt = processa_pacote(data)
+
+        if pkt.tipo != TIPO_ACK:
+            continue
+
+        cksum = crc32(pkt.data)
+        if (pkt.sum == cksum):
+            envia_ack(sock, pkt.num, pkt.host, pkt.porta)
+            dados += pkt.data
+
+    return dados
