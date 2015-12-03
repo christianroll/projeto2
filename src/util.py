@@ -84,3 +84,9 @@ def envia_pacote(socket, pacote, host, porta):
     # Primeiro gera o dado a ser enviado
     dado = pack('iHH' + str(len(pacote.data)) + 's', pacote.num, int(pacote.sum), pacote.tipo, pacote.data)
     socket.sendto(dado, (host, porta))
+
+# Rotina para corromper o pacote
+def corrompe_pacote(pacote):
+    pacote.data = pacote.data[::-1]
+    return pacote
+
