@@ -18,8 +18,7 @@ import argparse
 import sys
 
 import socket
-from util import *
-from util import crc32 as checksum
+from util import MSS, crc32 as checksum
 
 
 __authors__ = (
@@ -34,8 +33,6 @@ __version__ = "1.0"
 
 # Receiver UDP port
 RCV_PORT = 9001
-
-# MSS: Maximum segment size
 
 
 def main(args):
