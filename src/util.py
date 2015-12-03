@@ -102,6 +102,7 @@ def corrompe_pacote(pacote, probabilidade=1):
         pacote.data = pacote.data[::-1]
     return pacote
 
+
 # Envia pacotes utilizando a funcao envia_um_pacote
 def envia_pacotes(sock, pacotes, host, porta, window):
     ultimo_sem_ack = 0
@@ -137,10 +138,12 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 sem_ack = 0
                 continue
 
+
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
     envia_um_pacote(cria_pacotes('', tipo=TIPO_EOF))
+
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
