@@ -47,11 +47,11 @@ def cria_pacotes(dados):
     while a_enviar > 0:
         data = dados[enviados:enviados + a_enviar]
         pacotes.append(pacote(
-            num=num,            # Número de sequência
-            sum=crc32(data),    # Checksum
-            tipo=TIPO_DADO,     # DADO ou ACK em 16 bits
-            data=data,          # (MSS - HEADER_LEN) bytes de dados
-            acked=False))       # Se foi acked
+            num=num,  # Número de sequência
+            sum=crc32(data),  # Checksum
+            tipo=TIPO_DADO,  # DADO ou ACK em 16 bits
+            data=data,  # (MSS - HEADER_LEN) bytes de dados
+            acked=False))  # Se foi acked
         enviados += a_enviar
         a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
@@ -65,14 +65,22 @@ def processa_pac_ack(dado):
     pac_ack = ack._make(unpack('iHH', dado))
     return pac_ack
 
+
 # Processa pacote de dados para tipos a serem usados no programa
 def processa_pacote(dado):
     # Converte dados para o tipo pacote a ser utilizado no programa
     novo_pacote = pacote._make(unpack('iHH' + str(len(dado) - HEADER_LEN) + 's', dado) + (False,))
     return novo_pacote
 
+
 # Envia pacote to tipo ACK para a maquina, usando o socket
 def envia_ack(socket, num, host, porta):
     # Primeiro cria o pacote ACK
-    raw_ack = pack('iHH', num, 0, TIPO_ACK)
-    socket.sendto(raw_ack, (host, porta))
+    dado = pack('iHH', num, 0, TIPO_ACK)
+    socket.sendto(dado, (host, porta))
+
+# Envia pacote para o servidor
+def envia_pacote(socket, pacote, host, porta):
+    # Primeiro gera o dado a ser enviado
+    dado = pack('iHH' + str(len(pacote.data)) + 's', pacote.num, int(pacote.sum), pacote.tipo, pacote.data)
+    socket.sendto(dado, (host, porta))
