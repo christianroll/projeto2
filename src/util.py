@@ -148,7 +148,7 @@ def envia_dados(dados, tipo, sock, host, porta, window):
 
 # Funcao para receber dados
 def recebe_dados(sock):
-    pkt = pacote(0, 0, 0, 0, 0)
+    pkt = pacote(num=0, sum=0, tipo=0, data='', acked=False)
     dados = ''
 
     while (pkt.tipo is not TIPO_EOF):
