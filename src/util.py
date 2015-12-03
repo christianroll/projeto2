@@ -50,10 +50,14 @@ def cria_pacotes(dados):
 
     return pacotes
 
-def parse_ack(dado):
-    # Converda dados para o tipo pacote ack a ser utilizado
+def processa_pac_ack(dado):
+    # Converte dados para o tipo pacote ack a ser utilizado
     pac_ack = ack._make(unpack('iHH', dado))
     return pac_ack
 
+def processa_pacote(dado):
+    # Converte dados para o tipo pacote a ser utilizado no programa
+    novo_pacote = pacote._make(unpack('iHH' + str(len(dado) - HEADER_LEN) + 's', dado) + (False,))
+    return novo_pacote
 
 
