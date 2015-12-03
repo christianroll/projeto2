@@ -34,7 +34,7 @@ RCV_CWND = 5
 
 def main(args):
 
-    # Receiver opens UDP socket
+    # Receiver abre socket UDP
     try:
         rcv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         rcv_sock.bind(('', RCV_PORT))

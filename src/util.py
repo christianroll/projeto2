@@ -114,11 +114,13 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
             sem_ack += 1
         else:
-            # Listen for ACKs
+            # Se a janela estiver cheia, ela espera os acks para esvaziar a janela. 
+            # Espera pelos acks timeout segundos
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
                 dado, addr = sock.recvfrom(MSS)
-            else:  # Window is full and no ACK received before timeout
+            # Janela cheia e nenhum ACK recebido antes de timeout
+            else:
                 print "Timeout, seq num =", ultimo_sem_ack
                 sem_ack = 0
                 continue
