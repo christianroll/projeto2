@@ -40,7 +40,8 @@ ack = namedtuple("pacote", ["num", "sum", "tipo"])
 
 def crc32(data):
     buf = (binascii.crc32(data) & 0xFFFFFFFF)
-    return "%08X" % buf
+    return buf
+    #return "%08X" % buf
 
 
 # Cria *uma lista* de pacotes para serem enviados
