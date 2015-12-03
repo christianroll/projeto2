@@ -42,7 +42,7 @@ def main(args):
         print("Failed to open UDP socket")
         sys.exit(1)
 
-    rcv_sock.timeout(10)
+    rcv_sock.settimeout(10)
 
     # Request the file "filename" from Sender
     envia_dados(args.filename, rcv_sock, args.hostname, args.port, RCV_CWND)
