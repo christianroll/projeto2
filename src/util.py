@@ -46,7 +46,7 @@ def crc32(data):
 
 
 # Cria *uma lista* de pacotes (tuplas) para serem enviados
-# O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN".
+# O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN"
 # A função `min` é utilizada para quando último pacote for menor que esse valor
 def cria_pacotes(dados, tipo=TIPO_DADO):
     num = 0
@@ -56,12 +56,11 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
 
     while a_enviar > 0:
         data = dados[enviados:enviados + a_enviar]
-        pacotes.append(pacote(
+        pacotes.append(Pacote(
             num=num,  # Número de sequência
             sum=crc32(data),  # Checksum
             tipo=tipo,  # DADO ou ACK em 16 bits
-            data=data,  # (MSS - HEADER_LEN) bytes de dados
-            acked=False))  # Se foi acked
+            data=data))  # (MSS - HEADER_LEN) bytes de dados
         enviados += a_enviar
         a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
@@ -69,17 +68,10 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
     return pacotes
 
 
-# Processa pacote ACK
-def processa_pac_ack(dado):
-    pac_ack = ack._make(unpack('iHH', dado))
-    return pac_ack
-
-
-# Processa pacote de dados para tipos a serem usados no programa
+# Converte bytes para tupla pacote
 def processa_pacote(dado):
-    # Converte dados para o tipo pacote a ser utilizado no programa
-    novo_pacote = pacote._make(unpack('iIH' + str(len(dado) - HEADER_LEN) + 's', dado) + (False,))
-    return novo_pacote
+    pkt = Pacote._make(unpack('iIH' + str(len(dado) - HEADER_LEN) + 's', dado))
+    return pkt
 
 
 # Envia pacote to tipo ACK para a maquina, usando o socket
@@ -114,7 +106,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
             sem_ack += 1
         else:
-            # Se a janela estiver cheia, ela espera os acks para esvaziar a janela. 
+            # Se a janela estiver cheia, ela espera os acks para esvaziar a janela.
             # Espera pelos acks timeout segundos
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
