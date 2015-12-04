@@ -18,7 +18,7 @@ import argparse
 import sys
 
 import socket
-from util import MSS, RCV_PORT, envia_dados, recebe_dados, TIPO_DADO, TIPO_NOME
+from util import RCV_PORT, envia_dados, recebe_dados, TIPO_NOME
 
 
 __authors__ = (
@@ -31,6 +31,7 @@ __license__ = "GPL v3"
 __version__ = "1.0"
 
 RCV_CWND = 5
+
 
 def main(args):
 
