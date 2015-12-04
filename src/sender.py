@@ -14,8 +14,6 @@ import argparse
 import sys
 import socket
 # from util import recebe_dados, envia_dados, TIPO_DADO
-# importando funcoes para teste
-import unicodedata
 from util import *
 import os
 
@@ -41,24 +39,15 @@ def main(args):
         print("Error: '{}'".format(e))
 
     print("waiting on port: {} ".format(args.port))
-    #filename = recebe_dados(sdr_sock)
-    filename, addr = sdr_sock.recvfrom(400)
+    #filename = recebe_dados(sdr_sock, RCV_HOST, RCV_PORT)
+    filename, addr = sdr_sock.recvfrom(400) # Nome do arquivo deve caber
     print("Nome do arquivo: {}".format(filename))
 
     if (os.path.isfile(filename)):
         with open(filename, mode="r") as sdr_file:
             teste = sdr_file.read()
-            # print("Dados: {}".format(teste))
-            #sdr_sock.sendto(teste, ('', 9002))
-            # print("Enviando dados".format(filename))
-            envia_dados(teste, TIPO_DADO, sdr_sock, '', RCV_PORT, args.cwnd, args.PC)
+            envia_dados(teste, TIPO_DADO, sdr_sock, RCV_HOST, RCV_PORT, args.cwnd, args.PC)
             print("Enviou tudo")
-
-            # fim = 'final'
-            # fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
-            # pacotefinal = cria_pacotes(fim2, TIPO_EOF)
-            # print("pacotefinal: {}".format(pacotefinal[0]))
-            # envia_um_pacote(sdr_sock, pacotefinal[0], '', 9002)
     else:
         print ("Arquivo inexistente")
     return 0
