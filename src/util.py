@@ -39,7 +39,8 @@ HEADER_LEN = 10  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(2)
 Pacote = namedtuple("Pacote", ["num_seq", "chksum", "tipo", "data"])
 
 
-# Checksum with CRC32
+# Checksum com CRC32.
+# Retornar unsigned int de 32 bits gasta metade do espaço de uma string em hex
 def crc32(data):
     buf = (binascii.crc32(data) & 0xFFFFFFFF)
     return buf
@@ -70,7 +71,7 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
 
 # Converte bytes para tupla pacote
 def processa_pacote(dado):
-    pkt = Pacote._make(unpack('iIH' + str(len(dado) - HEADER_LEN) + 's', dado))
+    pkt = Pacote._make(unpack('IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
     return pkt
 
 
@@ -82,7 +83,7 @@ def envia_ack(sock, num_seq, host, porta):
 
 # Envia pacote para o servidor
 def envia_um_pacote(sock, pkt, host, porta):
-    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num, int(pkt.sum), pkt.tipo, pkt.data)
+    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num, pkt.sum, pkt.tipo, pkt.data)
     sock.sendto(dado, (host, porta))
 
 
