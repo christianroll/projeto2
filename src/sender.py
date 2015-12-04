@@ -32,6 +32,9 @@ def main(args):
     try:
         sdr_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sdr_sock.bind(("", args.port))
+    except socket.error:
+        print("Failed to open UDP socket")
+
         print("waiting on port: {} ".format(args.port))
         filename = recebe_dados(sdr_sock)
         print("Nome do arquivo: {}".format(filename))
@@ -41,9 +44,6 @@ def main(args):
                 envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
         else:
             print ("Arquivo inexistente")
-
-    except socket.error:
-        print("Failed to open UDP socket")
     return 0
 
 
