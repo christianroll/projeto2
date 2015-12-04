@@ -33,7 +33,7 @@ TIPO_DADO = 0b0101010101010101
 TIPO_NOME = 0b0000000011111111
 TIPO_ACK = 0b1010101010101010
 TIPO_EOF = 0b1111111100000000
-MSS = 2000
+MSS = 200
 TIMEOUT = 5
 HEADER_LEN = 10  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(2)
 
@@ -168,5 +168,7 @@ def recebe_dados(sock, host, porta):
         cksum = crc32(pkt.data)
         if (pkt.chksum == cksum):
             envia_ack(sock, pkt.num_seq, host, porta)
-            dados += pkt.data       
+            # nao coloca o EOF no arquivo
+            if (pkt.tipo != TIPO_EOF):
+                dados += pkt.data
     return dados
