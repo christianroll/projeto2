@@ -30,7 +30,7 @@ __authors__ = (
 __license__ = "GPL v3"
 __version__ = "1.0"
 
-RCV_CWND = 5
+RCV_CWND = 10
 
 
 def main(args):
