@@ -32,11 +32,11 @@ TIPO_ACK = 0b1010101010101010
 TIPO_EOF = 0b1111111100000000
 MSS = 2000
 TIMEOUT = 5
-HEADER_LEN = 16  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(4)
+HEADER_LEN = 10  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(2)
 
 
 # Struct para pacotes
-Pacote = namedtuple("Pacote", ["num", "sum", "tipo", "data"])
+Pacote = namedtuple("Pacote", ["num_seq", "chksum", "tipo", "data"])
 
 
 # Checksum with CRC32
@@ -57,8 +57,8 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
     while a_enviar > 0:
         data = dados[enviados:enviados + a_enviar]
         pacotes.append(Pacote(
-            num=num,  # Número de sequência
-            sum=crc32(data),  # Checksum
+            num_seq=num,  # Número de sequência
+            chksum=crc32(data),  # Checksum
             tipo=tipo,  # DADO ou ACK em 16 bits
             data=data))  # (MSS - HEADER_LEN) bytes de dados
         enviados += a_enviar
@@ -74,17 +74,15 @@ def processa_pacote(dado):
     return pkt
 
 
-# Envia pacote to tipo ACK para a maquina, usando o socket
-def envia_ack(sock, num, host, porta):
-    # Primeiro cria o pacote ACK
-    dado = pack('iHH', num, 0, TIPO_ACK)
-    sock.sendto(dado, (host, porta))
+# Envia pacote ACK
+def envia_ack(sock, num_seq, host, porta):
+    ack_pkt = Pacote(num_seq=num_seq, chksum=0, tipo=TIPO_ACK, data='')
+    envia_um_pacote(sock, ack_pkt, host, porta)
 
 
 # Envia pacote para o servidor
 def envia_um_pacote(sock, pkt, host, porta):
-    # Primeiro gera o dado a ser enviado
-    dado = pack('iIH' + str(len(pkt.data)) + 's', pkt.num, int(pkt.sum), pkt.tipo, pkt.data)
+    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num, int(pkt.sum), pkt.tipo, pkt.data)
     sock.sendto(dado, (host, porta))
 
 
