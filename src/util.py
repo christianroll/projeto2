@@ -27,6 +27,7 @@ __version__ = "1.0"
 
 # Receiver UDP port
 RCV_PORT = 9002
+RCV_HOST = ''
 
 TIPO_DADO = 0b0101010101010101
 TIPO_NOME = 0b0000000011111111
@@ -67,7 +68,6 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
         enviados += a_enviar
         a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
-
 
     return pacotes
 

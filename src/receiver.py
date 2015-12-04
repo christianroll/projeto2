@@ -52,26 +52,9 @@ def main(args):
     rcv_sock.sendto(args.filename, (args.hostname, args.port))
 
     # If the file exists, start receiving from sender
-    dados = recebe_dados(rcv_sock, args.hostname, args.port, args.PC)
-    # print("dados: {}".format(dados))
+    dados = recebe_dados(rcv_sock, args.hostname, args.port)
 
-    # pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
-    # dados = ''
-
-    # while (pkt.tipo != TIPO_EOF):
-    #     data, addr = rcv_sock.recvfrom(4000)
-    #     pkt = processa_pacote(data)
-    #     print("received: {}".format(pkt))
-    #     print("\n")
-    #     if (pkt.tipo != TIPO_ACK):
-    #         continue
-    #     else:
-    #         print("Ack received")
-    #     cksum = crc32(pkt.data)
-    #     if (pkt.chksum == cksum):
-    #         envia_ack(rcv_sock, pkt.num_seq, '', 9001)
-    #         dados += pkt.data
-
+    # Fecha o socket
     rcv_sock.close()
 
     # Escreve dados em um arquivo
