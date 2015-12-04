@@ -35,7 +35,8 @@ TIMEOUT = 5
 HEADER_LEN = 16  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(4)
 
 
-pacote = namedtuple("pacote", ["num", "sum", "tipo", "data", "acked"])
+# Struct para pacotes
+Pacote = namedtuple("Pacote", ["num", "sum", "tipo", "data"])
 
 
 def crc32(data):
