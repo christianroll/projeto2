@@ -58,7 +58,11 @@ def main(args):
     # printf("Dados: {}".format(dados))
 
     
-    recebe_dados(rcv_sock, args.hostname, args.port)
+    dados = recebe_dados(rcv_sock, args.hostname, args.port)
+    print("dados: {}".format(dados))
+    bla = processa_pacote(dados)
+    print("Teste: {}".format(bla))    
+
 
     # pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     # dados = ''

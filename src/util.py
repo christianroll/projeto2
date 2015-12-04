@@ -72,7 +72,7 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
 
 # Converte bytes para tupla pacote
 def processa_pacote(dado):
-    pkt = Pacote._make(unpack('IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
+    pkt = Pacote._make(unpack('=IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
     return pkt
 
 
@@ -86,6 +86,7 @@ def envia_ack(sock, num_seq, host, porta):
 def envia_um_pacote(sock, pkt, host, porta):
     dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt.data)
     sock.sendto(dado, (host, porta))
+    print("teste2")
 
 
 # Rotina para corromper o pacote
@@ -103,8 +104,9 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
-            envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
+            envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, 9002)
             sem_ack += 1
+            print("teste")
         else:
             # Se a janela estiver cheia, ela espera os acks para esvaziar a janela.
             # Espera pelos acks timeout segundos
@@ -113,7 +115,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 dado, addr = sock.recvfrom(MSS)
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
-                print "Timeout, seq num =", ultimo_sem_ack
+                print ("Timeout, seq num = {}".format(ultimo_sem_ack))
                 sem_ack = 0
                 continue
             # Confirma se o pacote é mesmo do servidor
@@ -131,12 +133,21 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             else:
                 sem_ack = 0
 
+def envia_pacotes2(sock, pacotes, host, porta, window):
+    return null
+
+
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
     # envia_um_pacote(cria_pacotes('', tipo=TIPO_EOF))
     
+    fim = 'blabla'
+    fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
+    pacotefinal = cria_pacotes(fim2, TIPO_EOF)
+    print("pacotefinal: {}".format(pacotefinal[0]))
+    envia_um_pacote(sdr_sock, pacotefinal[0], '', 9002)
 
 
 
@@ -160,6 +171,5 @@ def recebe_dados(sock, host, porta):
         cksum = crc32(pkt.data)
         if (pkt.chksum == cksum):
             envia_ack(sock, pkt.num_seq, host, porta)
-            dados += pkt.data
-
+            dados += pkt.data       
     return dados

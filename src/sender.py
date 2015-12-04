@@ -51,9 +51,9 @@ def main(args):
             # print("Dados: {}".format(teste))
             #sdr_sock.sendto(teste, ('', 9002))
             # print("Enviando dados".format(filename))
+            
             # envia_dados(teste, TIPO_DADO, sdr_sock, '', 9002, args.cwnd)
             
-
 
             pacote = cria_pacotes(teste, TIPO_DADO)
             print("pacote: {}".format(pacote))
@@ -70,8 +70,8 @@ def main(args):
             pacotefinal = cria_pacotes(fim2, TIPO_EOF)
             print("pacotefinal: {}".format(pacotefinal[0]))
 
-            num_seq1 = pacotefinal[0].num_seq
-            envia_ack(sdr_sock, num_seq1, '', 9002)
+            # num_seq1 = pacotefinal[0].num_seq
+            # envia_ack(sdr_sock, num_seq1, '', 9002)
 
             envia_um_pacote(sdr_sock, pacotefinal[0], '', 9002)
 
