@@ -53,7 +53,6 @@ def main(args):
 
     # If the file exists, start receiving from sender
     dados = recebe_dados(rcv_sock, args.hostname, args.port)
-    print("\n\n")
     print("dados: {}".format(dados))
 
     # pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')

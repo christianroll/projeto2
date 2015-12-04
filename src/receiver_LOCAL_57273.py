@@ -49,12 +49,22 @@ def main(args):
 
     # Request the file "filename" from Sender
     #envia_dados(args.filename, TIPO_NOME, rcv_sock, args.hostname, args.port, RCV_CWND)
-    rcv_sock.sendto(args.filename, (args.hostname, args.port))
 
-    # If the file exists, start receiving from sender
+    filenam = args.filename
+    rcv_sock.sendto(filenam, (args.hostname, args.port))
+
+    # # If the file exists, start receiving from sender
+    # dados = recebe_dados(rcv_sock)
+    # printf("Dados: {}".format(dados))
+
+    
     dados = recebe_dados(rcv_sock, args.hostname, args.port)
     print("\n\n")
     print("dados: {}".format(dados))
+    # bla = processa_pacote(dados)
+    # print("\n\n")
+    # print("Teste: {}".format(bla))    
+
 
     # pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     # dados = ''

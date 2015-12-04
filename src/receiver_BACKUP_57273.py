@@ -55,6 +55,13 @@ def main(args):
     dados = recebe_dados(rcv_sock, args.hostname, args.port)
     print("\n\n")
     print("dados: {}".format(dados))
+<<<<<<< HEAD
+    # bla = processa_pacote(dados)
+    # print("\n\n")
+    # print("Teste: {}".format(bla))    
+
+=======
+>>>>>>> master
 
     # pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     # dados = ''
