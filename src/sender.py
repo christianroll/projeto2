@@ -56,9 +56,10 @@ def main(args):
             n = 0
             while n < len(pacote):
                 envia_um_pacote(sdr_sock, pacote[n], '', 9002)
+                print("pack: {}".format(n))
                 print("pacote: {}".format(pacote[n]))
                 n += 1
-
+            print("Enviou tudo")
     else:
         print ("Arquivo inexistente")
     return 0
