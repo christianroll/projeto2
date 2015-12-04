@@ -35,7 +35,7 @@ TIMEOUT = 5
 HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
 
 pacote = namedtuple("pacote", ["num", "sum", "tipo", "data", "acked"])
-ack = namedtuple("pacote", ["num", "sum", "tipo"])
+ack = namedtuple("ack", ["num", "sum", "tipo"])
 
 
 def crc32(data):
@@ -44,7 +44,7 @@ def crc32(data):
     #return "%08X" % buf
 
 
-# Cria *uma lista* de pacotes para serem enviados
+# Cria *uma lista* de pacotes (tuplas) para serem enviados
 # O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN".
 # A função `min` é utilizada para quando último pacote for menor que esse valor
 def cria_pacotes(dados, tipo=TIPO_DADO):
@@ -68,9 +68,8 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
     return pacotes
 
 
-# Processa pacote ACK para o tipo a ser usados no programa
+# Processa pacote ACK
 def processa_pac_ack(dado):
-    # Converte dados para o tipo pacote ack a ser utilizado
     pac_ack = ack._make(unpack('iHH', dado))
     return pac_ack
 
