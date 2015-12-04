@@ -77,8 +77,8 @@ def main(args):
     rcv_sock.close()
 
     # Escreve dados em um arquivo
-    #with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
-    #    rcvd_file.write(dados)
+    with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
+        rcvd_file.write(dados)
 
     return 0
 
