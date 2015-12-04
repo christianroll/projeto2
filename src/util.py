@@ -14,7 +14,6 @@ import select
 from collections import namedtuple
 from struct import pack
 from struct import unpack
-import unicodedata
 
 __authors__ = (
     'Christian Rollmann',
@@ -33,7 +32,7 @@ TIPO_DADO = 0b0101010101010101
 TIPO_NOME = 0b0000000011111111
 TIPO_ACK = 0b1010101010101010
 TIPO_EOF = 0b1111111100000000
-MSS = 2000
+MSS = 200
 TIMEOUT = 5
 HEADER_LEN = 10  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(2)
 
@@ -93,7 +92,7 @@ def envia_sem_dados(sock, num_seq, host, porta, tipo):
 # Envia um pacote pelo socket
 def envia_um_pacote(sock, pkt, host, porta):
     dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt.data)
-    print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
+    # print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
     sock.sendto(dado, (host, porta))
 
 
@@ -121,9 +120,8 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
                 dado, addr = sock.recvfrom(MSS)
-                print("Pronto")
                 pr += 1
-                print(pr)
+                print("Pronto pacote: {}".format(pr))
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
                 print ("Timeout. Seq num = {}".format(ultimo_sem_ack))
@@ -154,6 +152,7 @@ def envia_dados(dados, tipo, sock, host, porta, window):
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
+    pn = 0
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     dados = ''
 
@@ -161,8 +160,8 @@ def recebe_dados(sock, host, porta):
         data, addr = sock.recvfrom(MSS)
         pkt = processa_pacote(data)
 
-        print("received: {}".format(pkt))
-
+        print("Received pac {}: \n{}\n".format(pn,pkt))
+        pn += 1
         if pkt.tipo == TIPO_ACK:
             print("Ack received")
 
