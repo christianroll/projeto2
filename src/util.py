@@ -81,9 +81,9 @@ def envia_ack(sock, num_seq, host, porta):
     envia_um_pacote(sock, ack_pkt, host, porta)
 
 
-# Envia pacote para o servidor
+# Envia um pacote pelo socket
 def envia_um_pacote(sock, pkt, host, porta):
-    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num, pkt.sum, pkt.tipo, pkt.data)
+    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt.data)
     sock.sendto(dado, (host, porta))
 
 
