@@ -32,7 +32,8 @@ TIPO_ACK = 0b1010101010101010
 TIPO_EOF = 0b1111111100000000
 MSS = 2000
 TIMEOUT = 5
-HEADER_LEN = 8  # tamanho do cabecalho, crc + seq num
+HEADER_LEN = 16  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(4)
+
 
 pacote = namedtuple("pacote", ["num", "sum", "tipo", "data", "acked"])
 ack = namedtuple("ack", ["num", "sum", "tipo"])
