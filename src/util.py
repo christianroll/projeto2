@@ -87,7 +87,7 @@ def envia_ack(sock, num_seq, host, porta):
 # Envia um pacote pelo socket
 def envia_um_pacote(sock, pkt, host, porta):
     dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt.data)
-    print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
+    # print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
     sock.sendto(dado, (host, porta))
 
 
@@ -115,9 +115,8 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
                 dado, addr = sock.recvfrom(MSS)
-                print("Pronto")
                 pr += 1
-                print(pr)
+                print("Pronto pacote: {}".format(pr))
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
                 print ("Timeout. Seq num = {}".format(ultimo_sem_ack))
@@ -148,11 +147,12 @@ def envia_dados(dados, tipo, sock, host, porta, window):
     fim = 'final'
     fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
     pacotefinal = cria_pacotes(fim2, TIPO_EOF)
-    print("pacotefinal: {}".format(pacotefinal[0]))
+    # print("pacotefinal: {}".format(pacotefinal[0]))
     envia_um_pacote(sock, pacotefinal[0], '', porta)
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
+    pn = 0
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     dados = ''
 
@@ -160,8 +160,8 @@ def recebe_dados(sock, host, porta):
         data, addr = sock.recvfrom(MSS)
         pkt = processa_pacote(data)
 
-        print("received: {}".format(pkt))
-
+        print("Received pac {}: \n{}\n".format(pn,pkt))
+        pn += 1
         if pkt.tipo == TIPO_ACK:
             print("Ack received") 
 
