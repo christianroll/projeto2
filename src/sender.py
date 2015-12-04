@@ -44,6 +44,9 @@ def main(args):
 
     if (os.path.isfile(filename)):
         with open(filename, mode="r") as sdr_file:
+            teste = sdr_file.read()
+            #print("Dados: {}".format(teste))
+            sdr_sock.sendto(teste, ('', 9002))
             print("Enviando dados".format(filename))
             #envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
     else:

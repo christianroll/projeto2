@@ -50,8 +50,13 @@ def main(args):
 
     # If the file exists, start receiving from sender
     #dados = recebe_dados(rcv_sock, args.hostname, args.port)
+    
     filenam = args.filename
     rcv_sock.sendto(filenam, (args.hostname, args.port))
+
+    while True:
+        data, addr = rcv_sock.recvfrom(4000)
+        print("received: {}".format(data)) 
 
     rcv_sock.close()
 
