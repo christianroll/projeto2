@@ -51,11 +51,8 @@ def main(args):
             # print("Dados: {}".format(teste))
             #sdr_sock.sendto(teste, ('', 9002))
             # print("Enviando dados".format(filename))
-            
-            # envia_dados(teste, TIPO_DADO, sdr_sock, '', 9002, args.cwnd)
+            envia_dados(teste, TIPO_DADO, sdr_sock, '', RCV_PORT, args.cwnd)
             print("Enviou tudo")
-
-
 
             # fim = 'final'
             # fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
