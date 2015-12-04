@@ -134,11 +134,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 sem_ack -= 1
             else:
                 sem_ack = 0
-
-def envia_pacotes2(sock, pacotes, host, porta, window):
-    return null
-
-
+                
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
