@@ -115,6 +115,8 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc):
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
             envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta, pc)
+            print("Pacote enviado: {}".format(pr))
+            pr += 1
             sem_ack += 1
             continue
         else:
@@ -123,8 +125,7 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc):
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
                 dado, addr = sock.recvfrom(MSS)
-                pr += 1
-                print("Pronto pacote: {}".format(pr))
+                # print("Pronto pacote: {}".format(pr))
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
                 print ("Timeout. Seq num = {}".format(ultimo_sem_ack))
@@ -177,6 +178,6 @@ def recebe_dados(sock, host, porta, pl, pc):
                 envia_ack(sock, pkt.num_seq, host, porta, pc)
                 dados += pkt.data
             else: 
-                print("Deu Ruim")
+                print("Pacote Corrompido")
 
     return dados
