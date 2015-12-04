@@ -106,7 +106,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
     pr = 0
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
-            envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, 9002)
+            envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta)
             sem_ack += 1
             continue
         else:
@@ -149,7 +149,7 @@ def envia_dados(dados, tipo, sock, host, porta, window):
     fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
     pacotefinal = cria_pacotes(fim2, TIPO_EOF)
     print("pacotefinal: {}".format(pacotefinal[0]))
-    envia_um_pacote(sock, pacotefinal[0], '', 9002)
+    envia_um_pacote(sock, pacotefinal[0], '', porta)
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
