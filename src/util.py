@@ -36,7 +36,6 @@ HEADER_LEN = 16  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(4)
 
 
 pacote = namedtuple("pacote", ["num", "sum", "tipo", "data", "acked"])
-ack = namedtuple("ack", ["num", "sum", "tipo"])
 
 
 def crc32(data):
