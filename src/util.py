@@ -94,6 +94,7 @@ def envia_um_pacote(sock, pkt, host, porta, pc):
     pkt_prob = corrompe_pacote(pkt, pc)
     dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt_prob)
     # print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
+
     sock.sendto(dado, (host, porta))
 
 
@@ -153,24 +154,29 @@ def envia_dados(dados, tipo, sock, host, porta, window, pc):
 
 
 # Funcao para receber dados
-def recebe_dados(sock, host, porta, pc):
+def recebe_dados(sock, host, porta, pl, pc):
     pn = 0
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     dados = ''
 
     while (pkt.tipo != TIPO_EOF):
-        data, addr = sock.recvfrom(MSS)
-        pkt = processa_pacote(data)
+        r = random.random()
+        if (r <= pl):
+            print("Pacote perdido \n")
+        else:     
+            data, addr = sock.recvfrom(MSS)
+            pkt = processa_pacote(data)
 
-        print("Received pac {}: \n{}\n".format(pn,pkt))
-        pn += 1
-        if pkt.tipo == TIPO_ACK:
-            print("Ack received")
+            print("Received pac {}: \n{}\n".format(pn,pkt))
+            pn += 1
+            if pkt.tipo == TIPO_ACK:
+                print("Ack received")
 
-        cksum = crc32(pkt.data)
-        if (pkt.chksum == cksum):
-            envia_ack(sock, pkt.num_seq, host, porta, pc)
-            dados += pkt.data
-        else: 
-            print("Deu Ruim")
+            cksum = crc32(pkt.data)
+            if (pkt.chksum == cksum):
+                envia_ack(sock, pkt.num_seq, host, porta, pc)
+                dados += pkt.data
+            else: 
+                print("Deu Ruim")
+
     return dados

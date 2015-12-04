@@ -52,7 +52,7 @@ def main(args):
     rcv_sock.sendto(args.filename, (args.hostname, args.port))
 
     # If the file exists, start receiving from sender
-    dados = recebe_dados(rcv_sock, args.hostname, args.port)
+    dados = recebe_dados(rcv_sock, args.hostname, args.port, args.PL, args.PC)
 
     # Fecha o socket
     rcv_sock.close()
