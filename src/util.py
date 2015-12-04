@@ -84,6 +84,12 @@ def envia_ack(sock, num_seq, host, porta):
     envia_um_pacote(sock, ack_pkt, host, porta)
 
 
+# Envia pacote sem dados
+def envia_sem_dados(sock, num_seq, host, porta, tipo):
+    ack_pkt = Pacote(num_seq=num_seq, chksum=0, tipo=tipo, data=str())
+    envia_um_pacote(sock, ack_pkt, host, porta)
+
+
 # Envia um pacote pelo socket
 def envia_um_pacote(sock, pkt, host, porta):
     dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt.data)
@@ -128,7 +134,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
                 # continue
             # Decodifica dados
             pkt = processa_pacote(dado)
-            # Confirma se o pacote é mesmo oum pacote ack
+            # Confirma se o pacote é mesmo um pacote ack
             if pkt.tipo != TIPO_ACK:
                 continue
             print("Recebeu ack\n")
@@ -143,13 +149,8 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
-    # envia_um_pacote(sock, cria_pacotes(str(), tipo=TIPO_EOF), host,porta)
+    envia_sem_dados(sock, 0, host, porta, TIPO_EOF)
 
-    fim = 'final'
-    fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
-    pacotefinal = cria_pacotes(fim2, TIPO_EOF)
-    print("pacotefinal: {}".format(pacotefinal[0]))
-    envia_um_pacote(sock, pacotefinal[0], '', porta)
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
@@ -163,10 +164,10 @@ def recebe_dados(sock, host, porta):
         print("received: {}".format(pkt))
 
         if pkt.tipo == TIPO_ACK:
-            print("Ack received") 
+            print("Ack received")
 
         cksum = crc32(pkt.data)
         if (pkt.chksum == cksum):
             envia_ack(sock, pkt.num_seq, host, porta)
-            dados += pkt.data       
+            dados += pkt.data
     return dados
