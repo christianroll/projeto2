@@ -38,13 +38,14 @@ def main(args):
         print("Error: '{}'".format(e))
 
     print("waiting on port: {} ".format(args.port))
-    filename = recebe_dados(sdr_sock)
+    #filename = recebe_dados(sdr_sock)
+    filename, addr = sdr_sock.recvfrom(400)
     print("Nome do arquivo: {}".format(filename))
 
     if (os.path.isfile(filename)):
         with open(filename, mode="r") as sdr_file:
-            print("Enviando dados")
-            envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
+            print("Enviando dados".format(filename))
+            #envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
     else:
         print ("Arquivo inexistente")
     return 0
