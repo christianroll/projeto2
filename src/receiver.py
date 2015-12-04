@@ -43,18 +43,21 @@ def main(args):
         print("Failed to open UDP socket")
         sys.exit(1)
 
-    rcv_sock.settimeout(10)
+    #rcv_sock.settimeout(10)
 
     # Request the file "filename" from Sender
-    envia_dados(args.filename, TIPO_NOME, rcv_sock, args.hostname, args.port, RCV_CWND)
+    #envia_dados(args.filename, TIPO_NOME, rcv_sock, args.hostname, args.port, RCV_CWND)
 
     # If the file exists, start receiving from sender
-    dados = recebe_dados(rcv_sock, args.hostname, args.port)
+    #dados = recebe_dados(rcv_sock, args.hostname, args.port)
+    filenam = args.filename
+    rcv_sock.sendto(filenam, (args.hostname, args.port))
+
     rcv_sock.close()
 
     # Escreve dados em um arquivo
-    with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
-        rcvd_file.write(dados)
+    #with open(args.filename + "_rcvd", mode="wd") as rcvd_file:
+    #    rcvd_file.write(dados)
 
     return 0
 
