@@ -54,9 +54,9 @@ def main(args):
     filenam = args.filename
     rcv_sock.sendto(filenam, (args.hostname, args.port))
 
-    while True:
-        data, addr = rcv_sock.recvfrom(4000)
-        print("received: {}".format(data)) 
+    # while True:
+    #     data, addr = rcv_sock.recvfrom(4000)
+    #     print("received: {}".format(data)) 
 
     rcv_sock.close()
 

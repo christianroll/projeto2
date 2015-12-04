@@ -14,6 +14,8 @@ import argparse
 import sys
 import socket
 from util import recebe_dados, envia_dados, TIPO_DADO
+# importando funcoes para teste
+from util import cria_pacotes, envia_um_pacote
 import os
 
 
@@ -46,9 +48,17 @@ def main(args):
         with open(filename, mode="r") as sdr_file:
             teste = sdr_file.read()
             #print("Dados: {}".format(teste))
-            sdr_sock.sendto(teste, ('', 9002))
-            print("Enviando dados".format(filename))
-            #envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
+            #sdr_sock.sendto(teste, ('', 9002))
+            # print("Enviando dados".format(filename))
+            # envia_dados(teste, TIPO_DADO, sdr_sock, '', 9002, args.cwnd)
+            pacote = cria_pacotes(teste, TIPO_DADO)
+            # print("pacote: {}".format(pacote))
+            n = 0
+            while n < len(pacote):
+                envia_um_pacote(sdr_sock, pacote[n], '', 9002)
+                print("pacote: {}".format(pacote[n]))
+                n += 1
+
     else:
         print ("Arquivo inexistente")
     return 0
