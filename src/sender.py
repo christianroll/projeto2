@@ -7,7 +7,6 @@ UDP Sender
 """
 
 
-from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -32,18 +31,22 @@ def main(args):
     try:
         sdr_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sdr_sock.bind(("", args.port))
+        print("Abriu socket UDP na porta {}".format(args.port))
     except socket.error:
         print("Failed to open UDP socket")
+    except Exception, e:
+        print("Error: '{}'".format(e))
 
-        print("waiting on port: {} ".format(args.port))
-        filename = recebe_dados(sdr_sock)
-        print("Nome do arquivo: {}".format(filename))
+    print("waiting on port: {} ".format(args.port))
+    filename = recebe_dados(sdr_sock)
+    print("Nome do arquivo: {}".format(filename))
 
-        if (os.path.isfile(filename)):
-            with open(filename, mode="r") as sdr_file:
-                envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
-        else:
-            print ("Arquivo inexistente")
+    if (os.path.isfile(filename)):
+        with open(filename, mode="r") as sdr_file:
+            print("Enviando dados")
+            envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
+    else:
+        print ("Arquivo inexistente")
     return 0
 
 
