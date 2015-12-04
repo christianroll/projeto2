@@ -15,7 +15,8 @@ import sys
 import socket
 from util import recebe_dados, envia_dados, TIPO_DADO
 # importando funcoes para teste
-from util import cria_pacotes, envia_um_pacote
+import unicodedata
+from util import cria_pacotes, envia_um_pacote, TIPO_EOF
 import os
 
 
@@ -47,12 +48,13 @@ def main(args):
     if (os.path.isfile(filename)):
         with open(filename, mode="r") as sdr_file:
             teste = sdr_file.read()
-            #print("Dados: {}".format(teste))
+            # print("Dados: {}".format(teste))
             #sdr_sock.sendto(teste, ('', 9002))
             # print("Enviando dados".format(filename))
             # envia_dados(teste, TIPO_DADO, sdr_sock, '', 9002, args.cwnd)
             pacote = cria_pacotes(teste, TIPO_DADO)
             # print("pacote: {}".format(pacote))
+            
             n = 0
             while n < len(pacote):
                 envia_um_pacote(sdr_sock, pacote[n], '', 9002)
@@ -60,6 +62,11 @@ def main(args):
                 print("pacote: {}".format(pacote[n]))
                 n += 1
             print("Enviou tudo")
+            fim = 'final'
+            fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
+            pacotefinal = cria_pacotes(fim2, TIPO_DADO)
+            print("pacotefinal: {}".format(pacotefinal[0]))
+            envia_um_pacote(sdr_sock, pacotefinal[0], '', 9002)
     else:
         print ("Arquivo inexistente")
     return 0

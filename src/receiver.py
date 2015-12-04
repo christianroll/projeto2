@@ -18,7 +18,9 @@ import argparse
 import sys
 
 import socket
-from util import RCV_PORT, envia_dados, recebe_dados, TIPO_NOME
+# from util import RCV_PORT, envia_dados, recebe_dados, TIPO_NOME
+# import temporario para teste
+from util import *
 
 
 __authors__ = (
@@ -55,9 +57,16 @@ def main(args):
     # dados = recebe_dados(rcv_sock)
     # printf("Dados: {}".format(dados))
 
-    while True:
+    
+
+    pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
+    dados = ''
+
+    while (pkt.data != 'final'):
         data, addr = rcv_sock.recvfrom(4000)
-        print("received: {}".format(data)) 
+        pkt = processa_pacote(data)
+        print("received: {}".format(pkt.data))
+        print("\n") 
 
     rcv_sock.close()
 
