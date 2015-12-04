@@ -12,6 +12,7 @@ import select
 from collections import namedtuple
 from struct import pack
 from struct import unpack
+import unicodedata
 
 __authors__ = (
     'Christian Rollmann',
@@ -134,24 +135,31 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
-    envia_um_pacote(cria_pacotes('', tipo=TIPO_EOF))
+    # envia_um_pacote(cria_pacotes('', tipo=TIPO_EOF))
+    
+
 
 
 # Funcao para receber dados
-def recebe_dados(sock):
+def recebe_dados(sock, host, porta):
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     dados = ''
 
-    while (pkt.tipo is not TIPO_EOF):
+    while (pkt.tipo != TIPO_EOF):
         data, addr = sock.recvfrom(MSS)
         pkt = processa_pacote(data)
 
+        print("received: {}".format(pkt))
+        print("\n")
+
         if pkt.tipo != TIPO_ACK:
             continue
+        else:
+            print("Ack received") 
 
         cksum = crc32(pkt.data)
-        if (pkt.sum == cksum):
-            envia_ack(sock, pkt.num, pkt.host, pkt.porta)
+        if (pkt.chksum == cksum):
+            envia_ack(sock, pkt.num_seq, host, porta)
             dados += pkt.data
 
     return dados

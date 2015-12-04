@@ -58,15 +58,26 @@ def main(args):
     # printf("Dados: {}".format(dados))
 
     
+    recebe_dados(rcv_sock, args.hostname, args.port)
 
-    pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
-    dados = ''
+    # pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
+    # dados = ''
 
-    while (pkt.data != 'final'):
-        data, addr = rcv_sock.recvfrom(4000)
-        pkt = processa_pacote(data)
-        print("received: {}".format(pkt.data))
-        print("\n") 
+    # while (pkt.tipo != TIPO_EOF):
+    #     data, addr = rcv_sock.recvfrom(4000)
+    #     pkt = processa_pacote(data)
+    #     print("received: {}".format(pkt))
+    #     print("\n")
+       
+    #     if (pkt.tipo != TIPO_ACK):
+    #         continue
+    #     else: 
+    #         print("Ack received") 
+
+    #     cksum = crc32(pkt.data)
+    #     if (pkt.chksum == cksum):
+    #         envia_ack(rcv_sock, pkt.num_seq, '', 9001)
+    #         dados += pkt.data
 
     rcv_sock.close()
 
