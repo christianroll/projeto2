@@ -147,10 +147,22 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
+<<<<<<< HEAD
+def envia_dados(dados, tipo, sock, host, porta, window, pc):
+    envia_pacotes(sock, cria_pacotes(dados, pc, tipo), host, porta, window)
+    # envia_um_pacote(sock, cria_pacotes(str(), tipo=TIPO_EOF), host,porta)
+
+    fim = 'final'
+    fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
+    pacotefinal = cria_pacotes(fim2, pc, TIPO_EOF)
+    # print("pacotefinal: {}".format(pacotefinal[0]))
+    envia_um_pacote(sock, pacotefinal[0], '', porta)
+=======
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
     envia_sem_dados(sock, 0, host, porta, TIPO_EOF)
 
+>>>>>>> db81d32f1d21da7db0e20906c3a5be9f526f8342
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
@@ -170,5 +182,13 @@ def recebe_dados(sock, host, porta):
         cksum = crc32(pkt.data)
         if (pkt.chksum == cksum):
             envia_ack(sock, pkt.num_seq, host, porta)
+<<<<<<< HEAD
+            # nao coloca o EOF no arquivo
+            if (pkt.tipo != TIPO_EOF):
+                dados += pkt.data
+        else:
+            print("Deu ruim\n")
+=======
             dados += pkt.data
+>>>>>>> db81d32f1d21da7db0e20906c3a5be9f526f8342
     return dados

@@ -45,10 +45,10 @@ def main(args):
         print("Failed to open UDP socket")
         sys.exit(1)
 
-    #rcv_sock.settimeout(10)
+    # rcv_sock.settimeout(10)
 
     # Request the file "filename" from Sender
-    #envia_dados(args.filename, TIPO_NOME, rcv_sock, args.hostname, args.port, RCV_CWND)
+    # envia_dados(args.filename, TIPO_NOME, rcv_sock, args.hostname, args.port, RCV_CWND)
     rcv_sock.sendto(args.filename, (args.hostname, args.port))
 
     # If the file exists, start receiving from sender
@@ -63,12 +63,10 @@ def main(args):
     #     pkt = processa_pacote(data)
     #     print("received: {}".format(pkt))
     #     print("\n")
-       
     #     if (pkt.tipo != TIPO_ACK):
     #         continue
-    #     else: 
-    #         print("Ack received") 
-
+    #     else:
+    #         print("Ack received")
     #     cksum = crc32(pkt.data)
     #     if (pkt.chksum == cksum):
     #         envia_ack(rcv_sock, pkt.num_seq, '', 9001)
