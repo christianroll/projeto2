@@ -39,10 +39,10 @@ HEADER_LEN = 16  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(4)
 Pacote = namedtuple("Pacote", ["num", "sum", "tipo", "data"])
 
 
+# Checksum with CRC32
 def crc32(data):
     buf = (binascii.crc32(data) & 0xFFFFFFFF)
     return buf
-    #return "%08X" % buf
 
 
 # Cria *uma lista* de pacotes (tuplas) para serem enviados
