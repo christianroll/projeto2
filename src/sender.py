@@ -52,28 +52,28 @@ def main(args):
             #sdr_sock.sendto(teste, ('', 9002))
             # print("Enviando dados".format(filename))
             
-            envia_dados(teste, TIPO_DADO, sdr_sock, '', 9002, args.cwnd)
+            # envia_dados(teste, TIPO_DADO, sdr_sock, '', 9002, args.cwnd)
             
 
-            # pacote = cria_pacotes(teste, TIPO_DADO)
-            # print("pacote: {}".format(pacote))
+            pacote = cria_pacotes(teste, TIPO_DADO)
+            print("pacote: {}".format(pacote))
             
-            # n = 0
-            # while n < len(pacote):
-            #     envia_um_pacote(sdr_sock, pacote[n], '', 9002)
-            #     print("pack: {}".format(n))
-            #     print("pacote: {}".format(pacote[n]))
-            #     n += 1
+            n = 0
+            while n < len(pacote):
+                envia_um_pacote(sdr_sock, pacote[n], '', 9002)
+                print("pack: {}".format(n))
+                print("pacote: {}".format(pacote[n]))
+                n += 1
 
-            # fim = 'blabla'
-            # fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
-            # pacotefinal = cria_pacotes(fim2, TIPO_EOF)
-            # print("pacotefinal: {}".format(pacotefinal[0]))
+            fim = 'blabla'
+            fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
+            pacotefinal = cria_pacotes(fim2, TIPO_EOF)
+            print("pacotefinal: {}".format(pacotefinal[0]))
 
-            # num_seq1 = pacotefinal[0].num_seq
-            # envia_ack(sdr_sock, num_seq1, '', 9002)
+            num_seq1 = pacotefinal[0].num_seq
+            envia_ack(sdr_sock, num_seq1, '', 9002)
 
-            # envia_um_pacote(sdr_sock, pacotefinal[0], '', 9002)
+            envia_um_pacote(sdr_sock, pacotefinal[0], '', 9002)
 
             
 
