@@ -33,7 +33,7 @@ TIPO_DADO = 0b0101010101010101
 TIPO_NOME = 0b0000000011111111
 TIPO_ACK = 0b1010101010101010
 TIPO_EOF = 0b1111111100000000
-MSS = 200
+MSS = 500
 TIMEOUT = 5
 HEADER_LEN = 10  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(2)
 
@@ -52,7 +52,7 @@ def crc32(data):
 # Cria *uma lista* de pacotes (tuplas) para serem enviados
 # O arquivo é dividido em vários pacotes de tamanho "MSS - HEADER_LEN"
 # A função `min` é utilizada para quando último pacote for menor que esse valor
-def cria_pacotes(dados, tipo=TIPO_DADO):
+def cria_pacotes(dados, pc, tipo=TIPO_DADO):
     num = 0
     pacotes = []
     enviados = 0
@@ -64,10 +64,11 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
             num_seq=num,  # Número de sequência
             chksum=crc32(data),  # Checksum
             tipo=tipo,  # DADO ou ACK em 16 bits
-            data=data))  # (MSS - HEADER_LEN) bytes de dados
+            data=corrompe_pacote(data, pc)))  # (MSS - HEADER_LEN) bytes de dados
         enviados += a_enviar
         a_enviar = min(MSS - HEADER_LEN, len(dados) - enviados)
         num += 1
+
 
     return pacotes
 
@@ -92,11 +93,12 @@ def envia_um_pacote(sock, pkt, host, porta):
 
 
 # Rotina para corromper o pacote
-def corrompe_pacote(pkt, probabilidade=1):
+def corrompe_pacote(data, probabilidade):
+    dataCorrompida = data
     r = random.random()
     if (r <= probabilidade):
-        pkt.data = pkt.data[::-1]
-    return pkt
+        dataCorrompida = data[::-1]
+    return dataCorrompida
 
 
 # Envia pacotes utilizando a funcao envia_um_pacote
@@ -140,13 +142,13 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
-def envia_dados(dados, tipo, sock, host, porta, window):
-    envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
+def envia_dados(dados, tipo, sock, host, porta, window, pc):
+    envia_pacotes(sock, cria_pacotes(dados, pc, tipo), host, porta, window)
     # envia_um_pacote(sock, cria_pacotes(str(), tipo=TIPO_EOF), host,porta)
 
     fim = 'final'
     fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
-    pacotefinal = cria_pacotes(fim2, TIPO_EOF)
+    pacotefinal = cria_pacotes(fim2, pc, TIPO_EOF)
     # print("pacotefinal: {}".format(pacotefinal[0]))
     envia_um_pacote(sock, pacotefinal[0], '', porta)
 
@@ -171,4 +173,6 @@ def recebe_dados(sock, host, porta):
             # nao coloca o EOF no arquivo
             if (pkt.tipo != TIPO_EOF):
                 dados += pkt.data
+        else:
+            print("Deu ruim\n")
     return dados
