@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 import argparse
 import sys
 import socket
-from util import crc32 as checksum, recebe_dados
+from util import recebe_dados, envia_dados, TIPO_DADO
 import os
 
 
@@ -28,12 +28,6 @@ __license__ = "GPL v3"
 __version__ = "1.0"
 
 
-
-
-# MSS: Maximum segment size
-MSS = 2000
-
-
 def main(args):
     try:
         sdr_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -42,30 +36,14 @@ def main(args):
         filename = recebe_dados(sdr_sock)
         print("Nome do arquivo: {}".format(filename))
 
-        '''if (os.path.isfile(filename)):
-            # If the file exists, start receiving from sender
-            with open(filename + "_rcvd", mode="wd") as sdr_file:
-                pkt = cria_pacotes(sdr_file.read())
-            seq_num = 0
-            try:
-                while True:
-            
-            except socket.error:
-                print("Socket error")
-                continue
-
-
+        if (os.path.isfile(filename)):
+            with open(filename, mode="r") as sdr_file:
+                envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, args.hostname, args.port, args.cwnd)
         else:
-            print ("Não existe arquivo")''' 
+            print ("Arquivo inexistente")
 
     except socket.error:
         print("Failed to open UDP socket")
-                
-        
-        
-
-
-
     return 0
 
 
