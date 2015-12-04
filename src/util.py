@@ -6,6 +6,8 @@
 Util functions
 """
 
+from __future__ import print_function
+from __future__ import unicode_literals
 import binascii
 import random
 import select
@@ -72,7 +74,7 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
 
 # Converte bytes para tupla pacote
 def processa_pacote(dado):
-    pkt = Pacote._make(unpack('=IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
+    pkt = Pacote._make(unpack('IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
     return pkt
 
 
@@ -163,9 +165,7 @@ def recebe_dados(sock, host, porta):
         print("received: {}".format(pkt))
         print("\n")
 
-        if pkt.tipo != TIPO_ACK:
-            continue
-        else:
+        if pkt.tipo == TIPO_ACK:
             print("Ack received") 
 
         cksum = crc32(pkt.data)
