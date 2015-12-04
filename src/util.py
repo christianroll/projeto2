@@ -71,7 +71,6 @@ def cria_pacotes(dados, pc, tipo=TIPO_DADO):
 
     return pacotes
 
-
 # Converte bytes para tupla pacote
 def processa_pacote(dado):
     pkt = Pacote._make(unpack('IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
@@ -149,7 +148,7 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
-    envia_sem_dados(sock, 0, host, porta, TIPO_EOF)
+    # envia_sem_dados(sock, 0, host, porta, TIPO_EOF)
 
 
 # Funcao para receber dados
