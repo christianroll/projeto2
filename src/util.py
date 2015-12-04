@@ -146,8 +146,8 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
-def envia_dados(dados, tipo, sock, host, porta, window):
-    envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
+def envia_dados(dados, tipo, sock, host, porta, window, pc):
+    envia_pacotes(sock, cria_pacotes(dados, pc, tipo), host, porta, window)
     envia_sem_dados(sock, 0, host, porta, TIPO_EOF)
 
 
@@ -170,4 +170,6 @@ def recebe_dados(sock, host, porta):
         if (pkt.chksum == cksum):
             envia_ack(sock, pkt.num_seq, host, porta)
             dados += pkt.data
+        else: 
+            print("Deu Ruim")
     return dados
