@@ -103,7 +103,7 @@ def corrompe_pacote(pkt, probabilidade=1):
 def envia_pacotes(sock, pacotes, host, porta, window):
     ultimo_sem_ack = 0
     sem_ack = 0
-
+    pr = 0
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
             envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, 9002)
@@ -116,21 +116,24 @@ def envia_pacotes(sock, pacotes, host, porta, window):
             if pronto[0]:
                 dado, addr = sock.recvfrom(MSS)
                 print("Pronto")
+                pr += 1
+                print(pr)
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
                 print ("Timeout. Seq num = {}".format(ultimo_sem_ack))
                 sem_ack = 0
                 continue
             # Confirma se o pacote é mesmo do servidor
-            if addr[0] != host:
-                continue
+            # if addr[0] != host:
+                # continue
             # Decodifica dados
             pkt = processa_pacote(dado)
             # Confirma se o pacote é mesmo oum pacote ack
             if pkt.tipo != TIPO_ACK:
                 continue
+            print("Recebeu ack\n")
             # Verifica o seq num para ver se é mesmo o pacote mandado
-            if pkt.num == ultimo_sem_ack:
+            if pkt.num_seq == ultimo_sem_ack:
                 ultimo_sem_ack += 1
                 sem_ack -= 1
             else:
@@ -140,8 +143,13 @@ def envia_pacotes(sock, pacotes, host, porta, window):
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window):
     envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window)
-    envia_um_pacote(cria_pacotes(str(), tipo=TIPO_EOF))
+    # envia_um_pacote(sock, cria_pacotes(str(), tipo=TIPO_EOF), host,porta)
 
+    fim = 'final'
+    fim2 = unicodedata.normalize('NFKD', fim).encode('ascii', 'ignore')
+    pacotefinal = cria_pacotes(fim2, TIPO_EOF)
+    print("pacotefinal: {}".format(pacotefinal[0]))
+    envia_um_pacote(sock, pacotefinal[0], '', 9002)
 
 # Funcao para receber dados
 def recebe_dados(sock, host, porta):
