@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 import argparse
 import sys
 import socket
-# from util import recebe_dados, envia_dados, TIPO_DADO
+# from util import envia_dados, TIPO_DADO
 from util import *
 import os
 
@@ -39,7 +39,6 @@ def main(args):
         print("Error: '{}'".format(e))
 
     print("waiting on port: {} ".format(args.port))
-    #filename = recebe_dados(sdr_sock, RCV_HOST, RCV_PORT)
     filename, addr = sdr_sock.recvfrom(400) # Nome do arquivo deve caber
     print("Nome do arquivo: {}".format(filename))
 
