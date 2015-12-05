@@ -71,10 +71,19 @@ def cria_pacotes(dados, tipo=TIPO_DADO):
 
     return pacotes
 
+
 # Converte bytes para tupla pacote
 def processa_pacote(dado):
     pkt = Pacote._make(unpack('IIH' + str(len(dado) - HEADER_LEN) + 's', dado))
     return pkt
+
+
+# Envia um pacote pelo socket
+def envia_um_pacote(sock, pkt, host, porta, pc):
+    pkt_prob = corrompe_pacote(pkt, pc)
+    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt_prob)
+    # print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
+    sock.sendto(dado, (host, porta))
 
 
 # Envia pacote ACK
@@ -87,15 +96,6 @@ def envia_ack(sock, num_seq, host, porta, pc):
 def envia_sem_dados(sock, num_seq, host, porta, tipo, pc):
     ack_pkt = Pacote(num_seq=num_seq, chksum=0, tipo=tipo, data=str())
     envia_um_pacote(sock, ack_pkt, host, porta, pc)
-
-
-# Envia um pacote pelo socket
-def envia_um_pacote(sock, pkt, host, porta, pc):
-    pkt_prob = corrompe_pacote(pkt, pc)
-    dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt_prob)
-    # print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
-
-    sock.sendto(dado, (host, porta))
 
 
 # Rotina para corromper o pacote
@@ -154,30 +154,38 @@ def envia_dados(dados, tipo, sock, host, porta, window, pc):
     envia_sem_dados(sock, 0, host, porta, TIPO_EOF, pc)
 
 
-# Funcao para receber dados
+# Funcao para receber dados.
+# Não é usada para TIPO_NOME. Retorna o dado montado de todos os pacotes.
 def recebe_dados(sock, host, porta, pl, pc):
     pn = 0
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
+    ultimo_ns = -1
     dados = ''
 
+    # EOF é enviado apenas após todos os outros pacotes já terem sido recebidos
     while (pkt.tipo != TIPO_EOF):
         r = random.random()
         if (r <= pl):
-            print("Pacote perdido \n")
-        else:     
+            print("Pacote perdido\n")
+        else:
             data, addr = sock.recvfrom(MSS)
             pkt = processa_pacote(data)
 
-            print("Received pac {}: \n{}\n".format(pn,pkt))
+            print("Received pac {}: \n{}\n".format(pn, pkt))
             pn += 1
-            if pkt.tipo == TIPO_ACK:
-                print("Ack received")
 
-            cksum = crc32(pkt.data)
-            if (pkt.chksum == cksum):
-                envia_ack(sock, pkt.num_seq, host, porta, pc)
-                dados += pkt.data
-            else: 
+            if pkt.tipo == TIPO_ACK:
+                print("ACK received")
+            elif pkt.tipo == TIPO_DADO:
+                cksum = crc32(pkt.data)
+                if (pkt.chksum == cksum):
+                    envia_ack(sock, pkt.num_seq, host, porta, pc)
+                    if (pkt.num_seq == ultimo_ns + 1):
+                        dados += pkt.data
+                        ultimo_ns += 1
+                else:
+                    print("Pacote Corrompido")
+            else:
                 print("Pacote Corrompido")
 
     return dados

@@ -64,3 +64,6 @@ target/
 
 # Arquivo recebido
 *_rcvd
+
+# .orig
+*.orig
