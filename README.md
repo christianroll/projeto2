@@ -12,19 +12,19 @@ Descrição completa em [Projeto_02-description.pdf](docs/Projeto_02-description
 
 *   [Python 2.7](https://www.python.org/)
 
-## Intruções
+## Instruções
 
 Rodar no modo manual entrando com os parâmetros pelo terminal:
 
 Em duas abas distintas no terminal rodar:
 
-### Programa sender.py:
+Programa sender.py:
 
-  $ python sender.py <cwnd> <PL> <PC> -p <porta do sender>
+    $ python sender.py <cwnd> <PL> <PC> -p <porta do sender>
 
-### Programa receiver.py:
+Programa receiver.py:
 
-  $ python receiver.py <localhost> <porta do sender> <nome do arquivo> <PL> <PC>
+    $ python receiver.py <localhost> <porta do sender> <nome do arquivo> <PL> <PC>
 
 ou
 
