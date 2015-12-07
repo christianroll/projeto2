@@ -109,12 +109,15 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
     ultimo_sem_ack = 0
     sem_ack = 0
     pr = 0
+    countSent = 0
+    countAcks = 0
     while ultimo_sem_ack < len(pacotes):
         if sem_ack < window and (sem_ack + ultimo_sem_ack) < len(pacotes):
             envia_um_pacote(sock, pacotes[ultimo_sem_ack + sem_ack], host, porta, pc)
             print("Pacote enviado: {}".format(pr))
             pr += 1
             sem_ack += 1
+            countSent += 1
             continue
         else:
             # Se a janela estiver cheia, ela espera os acks para esvaziar a janela.
@@ -133,13 +136,15 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
             if pkt.tipo != TIPO_ACK:
                 continue
             print("Recebeu ack do pacote: {}".format(pkt.num_seq))
+            countAcks += 1
             # Verifica o seq num para ver se é mesmo o pacote mandado
             if pkt.num_seq == ultimo_sem_ack:
                 ultimo_sem_ack += 1
                 sem_ack -= 1
             else:
                 sem_ack = 0
-
+    print("\n-------------------------------------------------")
+    print("Resumo da execução:\n\n\t- Pacotes enviados: {}\n\t- Acks recebidos: {}".format(countSent,countAcks))
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window, pc, verbose):
@@ -154,13 +159,15 @@ def recebe_dados(sock, host, porta, pl, pc, verbose):
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     ultimo_ns = -1
     dados = ''
-
+    countCorr = 0
+    countPerd = 0
     # EOF é enviado apenas após todos os outros pacotes já terem sido recebidos
     while (pkt.tipo != TIPO_EOF):
         # Probabilidade de perda do pacote
         r = random.random()
         if (r <= pl):
             print("Pacote perdido")
+            countPerd += 1
         else:
             data, addr = sock.recvfrom(MSS)
             pkt = processa_pacote(data)
@@ -182,11 +189,14 @@ def recebe_dados(sock, host, porta, pl, pc, verbose):
                         ultimo_ns += 1
                 else:
                     print("Pacote Corrompido")
+                    countCorr += 1
             # Tratamento para fim de arquivo
             elif pkt.tipo == TIPO_EOF:
-                print("Recebimento de dados finalizado")
+                print("\t- Recebimento de dados finalizado")
             # Mensagem para tipo de dados não tratados
             else:
                 print("Tipo de dado não reconhecido (corrompido?)")
-
+    print("\t- Pacotes Corrompidos: {}".format(countCorr))
+    print("\t- Pacotes Perdidos: {}".format(countPerd))
+    print("-------------------------------------------------\n\n")
     return dados
