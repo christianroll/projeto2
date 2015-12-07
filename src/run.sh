@@ -9,7 +9,7 @@ echo -n "Digite a probabilidade de corrompimento: "
 read pc
 
 echo "Iniciando sender.py e receiver.py..."
-sleep 1
+sleep 0.2
 
 [[ -z $(lsof -t -i :9001) ]] || kill $(lsof -t -i :9001)
 [[ -z $(lsof -t -i :9002) ]] || kill $(lsof -t -i :9002)

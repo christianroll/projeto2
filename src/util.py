@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import binascii
 import random
 import select
+import time
 from collections import namedtuple
 from struct import pack
 from struct import unpack
@@ -143,8 +144,10 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
                 sem_ack -= 1
             else:
                 sem_ack = 0
+    # espera terminar recebimento para printar corretamente o resumo
+    time.sleep(2)
     print("\n-------------------------------------------------")
-    print("Resumo da execução:\n\n\t- Pacotes enviados: {}\n\t- Acks recebidos: {}".format(countSent,countAcks))
+    print("Resumo do envio:\n\n\t- Pacotes enviados: {}\n\t- Acks recebidos: {}".format(countSent,countAcks))
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
 def envia_dados(dados, tipo, sock, host, porta, window, pc, verbose):
@@ -192,11 +195,13 @@ def recebe_dados(sock, host, porta, pl, pc, verbose):
                     countCorr += 1
             # Tratamento para fim de arquivo
             elif pkt.tipo == TIPO_EOF:
+                print("-------------------------------------------------")
+                print("Resumo do recebimendo:\n")
                 print("\t- Recebimento de dados finalizado")
             # Mensagem para tipo de dados não tratados
             else:
                 print("Tipo de dado não reconhecido (corrompido?)")
     print("\t- Pacotes Corrompidos: {}".format(countCorr))
     print("\t- Pacotes Perdidos: {}".format(countPerd))
-    print("-------------------------------------------------\n\n")
+    print("-------------------------------------------------\n")
     return dados
