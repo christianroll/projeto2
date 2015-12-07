@@ -12,6 +12,9 @@ Descrição completa em [Projeto_02-description.pdf](docs/Projeto_02-description
 
 *   [Python 2.7](https://www.python.org/)
 
+## Intruções
+
+Para rodar o projeto, basta executar o arquivo run.sh no terminal.
 
 ## Alunos
 
