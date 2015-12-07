@@ -14,7 +14,7 @@ Descrição completa em [Projeto_02-description.pdf](docs/Projeto_02-description
 
 ## Instruções
 
-#Rodar no modo manual:
+###Rodar no modo manual:
 
 Entrando com os parâmetros pelo terminal:
 
@@ -30,7 +30,7 @@ Programa receiver.py:
 
 ou
 
-#Rodar no modo automático:
+###Rodar no modo automático:
 Basta executar o arquivo run.sh no terminal.
 
 ## Alunos
