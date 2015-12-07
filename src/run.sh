@@ -8,8 +8,8 @@ read pl
 echo -n "Digite a probabilidade de corrompimento: "
 read pc
 
-echo "You entered: $cwnd"
-
+echo "Iniciando sender.py e receiver.py..."
+sleep 1
 
 [[ -z $(lsof -t -i :9001) ]] || kill $(lsof -t -i :9001)
 [[ -z $(lsof -t -i :9002) ]] || kill $(lsof -t -i :9002)

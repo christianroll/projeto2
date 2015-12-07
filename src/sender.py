@@ -42,8 +42,7 @@ def main(args):
 
     if (os.path.isfile(filename)):
         with open(filename, mode="r") as sdr_file:
-            teste = sdr_file.read()
-            envia_dados(teste, TIPO_DADO, sdr_sock, RCV_HOST, RCV_PORT, args.cwnd, args.PC, args.v)
+            envia_dados(sdr_file.read(), TIPO_DADO, sdr_sock, RCV_HOST, RCV_PORT, args.cwnd, args.PC, args.v)
             print("Enviou tudo")
     else:
         print("Arquivo inexistente")

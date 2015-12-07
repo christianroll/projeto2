@@ -80,7 +80,6 @@ def processa_pacote(dado):
 def envia_um_pacote(sock, pkt, host, porta, pc):
     pkt_prob = corrompe_pacote(pkt, pc)
     dado = pack('IIH' + str(len(pkt.data)) + 's', pkt.num_seq, pkt.chksum, pkt.tipo, pkt_prob)
-    # print("Enviando um pacote. chksum: {}, tipo: {}, data: {}".format(pkt.chksum, pkt.tipo, pkt.data))
     sock.sendto(dado, (host, porta))
 
 
@@ -128,9 +127,6 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
                 print("Timeout. Seq num = {}".format(ultimo_sem_ack))
                 sem_ack = 0
                 continue
-                # Confirma se o pacote é mesmo do servidor
-                # if addr[0] != host:
-                # continue
             # Decodifica dados
             pkt = processa_pacote(dado)
             # Confirma se o pacote é mesmo um pacote ack
