@@ -123,7 +123,6 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
             pronto = select.select([sock], [], [], TIMEOUT)
             if pronto[0]:
                 dado, addr = sock.recvfrom(MSS)
-                # print("Pronto pacote: {}".format(pr))
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
                 print("Timeout. Seq num = {}".format(ultimo_sem_ack))
@@ -137,7 +136,6 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
             # Confirma se o pacote é mesmo um pacote ack
             if pkt.tipo != TIPO_ACK:
                 continue
-
             print("Recebeu ack do pacote: {}".format(pkt.num_seq))
             # Verifica o seq num para ver se é mesmo o pacote mandado
             if pkt.num_seq == ultimo_sem_ack:
@@ -163,33 +161,35 @@ def recebe_dados(sock, host, porta, pl, pc, verbose):
 
     # EOF é enviado apenas após todos os outros pacotes já terem sido recebidos
     while (pkt.tipo != TIPO_EOF):
+        # Probabilidade de perda do pacote
         r = random.random()
         if (r <= pl):
             print("Pacote perdido")
         else:
             data, addr = sock.recvfrom(MSS)
             pkt = processa_pacote(data)
-
-            if verbose:
-                print("Pacote recebido: {} {}".format(pn, pkt))
-            else:
-                print("Pacote recebido: {}".format(pn))
-
             pn += 1
-
+            # Tratamento de ACK
             if pkt.tipo == TIPO_ACK:
                 print("ACK received")
             elif pkt.tipo == TIPO_DADO:
                 cksum = crc32(pkt.data)
+                # Se checksum ok, aceita pacote e volta ack para o sender. Senão o pacote está corrompido
                 if (pkt.chksum == cksum):
+                    if verbose:
+                        print("Pacote recebido: {} {}".format(pn, pkt))
+                    else:
+                        print("Pacote recebido: {}".format(pn))
                     envia_ack(sock, pkt.num_seq, host, porta, pc)
                     if (pkt.num_seq == ultimo_ns + 1):
                         dados += pkt.data
                         ultimo_ns += 1
                 else:
                     print("Pacote Corrompido")
+            # Tratamento para fim de arquivo
             elif pkt.tipo == TIPO_EOF:
                 print("Recebimento de dados finalizado")
+            # Mensagem para tipo de dados não tratados
             else:
                 print("Tipo de dado não reconhecido (corrompido?)")
 
