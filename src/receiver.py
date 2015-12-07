@@ -48,7 +48,7 @@ def main(args):
     rcv_sock.sendto(args.filename, (args.hostname, args.port))
 
     # If the file exists, start receiving from sender
-    dados = recebe_dados(rcv_sock, args.hostname, args.port, args.PL, args.PC)
+    dados = recebe_dados(rcv_sock, args.hostname, args.port, args.PL, args.PC, args.v)
 
     # Fecha o socket
     rcv_sock.close()
@@ -68,6 +68,7 @@ if __name__ == "__main__":
     parser.add_argument('PL', type=float, help='Packet Loss probability')
     parser.add_argument('PC', type=float, help='Packet Corruption probability')
     parser.add_argument('--version', action='version', version='%(prog)s v' + __version__)
+    parser.add_argument('-v', help="verbose", action="store_true")
     args = parser.parse_args()
 
     sys.exit(main(args))

@@ -155,7 +155,7 @@ def envia_dados(dados, tipo, sock, host, porta, window, pc, verbose):
 
 # Funcao para receber dados.
 # Não é usada para TIPO_NOME. Retorna o dado montado de todos os pacotes.
-def recebe_dados(sock, host, porta, pl, pc):
+def recebe_dados(sock, host, porta, pl, pc, verbose):
     pn = 0
     pkt = Pacote(num_seq=0, chksum=0, tipo=0, data='')
     ultimo_ns = -1
@@ -165,12 +165,16 @@ def recebe_dados(sock, host, porta, pl, pc):
     while (pkt.tipo != TIPO_EOF):
         r = random.random()
         if (r <= pl):
-            print("Pacote perdido\n")
+            print("Pacote perdido")
         else:
             data, addr = sock.recvfrom(MSS)
             pkt = processa_pacote(data)
 
-            print("Received pac {}: \n{}\n".format(pn, pkt))
+            if verbose:
+                print("Pacote recebido: {} {}".format(pn, pkt))
+            else:
+                print("Pacote recebido: {}".format(pn))
+
             pn += 1
 
             if pkt.tipo == TIPO_ACK:
@@ -184,7 +188,9 @@ def recebe_dados(sock, host, porta, pl, pc):
                         ultimo_ns += 1
                 else:
                     print("Pacote Corrompido")
+            elif pkt.tipo == TIPO_EOF:
+                print("Recebimento de dados finalizado")
             else:
-                print("Pacote Corrompido")
+                print("Tipo de dado não reconhecido (corrompido?)")
 
     return dados
