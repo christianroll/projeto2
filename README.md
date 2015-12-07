@@ -19,9 +19,11 @@ Rodar no modo manual entrando com os parâmetros pelo terminal:
 Em duas abas distintas no terminal rodar:
 
 Programa sender.py:
+
 $ python sender.py <cwnd> <PL> <PC> -p <porta do sender>
 
 Programa receiver.py:
+
 $ python receiver.py <localhost> <porta do sender> <nome do arquivo> <PL> <PC>
 
 ou
