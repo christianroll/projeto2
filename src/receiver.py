@@ -10,25 +10,22 @@ Resquests a file from sender
 Waits to receive all packets
 """
 
-
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 import argparse
 import sys
-
 import socket
 # from util import RCV_PORT, envia_dados, recebe_dados, TIPO_NOME
 # import temporario para teste
 from util import *
 
-
 __authors__ = (
-                'Christian Rollmann',
-                'Isaac Mitsuaki Saito',
-                'Julio Batista Silva',
-                'Marcelo Fernandes Tedeschi'
-              )
+    'Christian Rollmann',
+    'Isaac Mitsuaki Saito',
+    'Julio Batista Silva',
+    'Marcelo Fernandes Tedeschi'
+)
 __license__ = "GPL v3"
 __version__ = "1.0"
 
@@ -36,7 +33,6 @@ RCV_CWND = 10
 
 
 def main(args):
-
     # Receiver abre socket UDP
     try:
         rcv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -71,8 +67,7 @@ if __name__ == "__main__":
     parser.add_argument('filename', help='Filename')
     parser.add_argument('PL', type=float, help='Packet Loss probability')
     parser.add_argument('PC', type=float, help='Packet Corruption probability')
-    parser.add_argument('--version', action='version',
-                        version='%(prog)s v' + __version__)
+    parser.add_argument('--version', action='version', version='%(prog)s v' + __version__)
     args = parser.parse_args()
 
     sys.exit(main(args))

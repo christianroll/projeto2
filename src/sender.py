@@ -6,7 +6,6 @@
 UDP Sender
 """
 
-
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -17,13 +16,12 @@ import socket
 from util import *
 import os
 
-
 __authors__ = (
-                'Christian Rollmann',
-                'Isaac Mitsuaki Saito',
-                'Julio Batista Silva',
-                'Marcelo Fernandes Tedeschi'
-              )
+    'Christian Rollmann',
+    'Isaac Mitsuaki Saito',
+    'Julio Batista Silva',
+    'Marcelo Fernandes Tedeschi'
+)
 __license__ = "GPL v3"
 __version__ = "1.0"
 
@@ -39,7 +37,7 @@ def main(args):
         print("Error: '{}'".format(e))
 
     print("waiting on port: {} ".format(args.port))
-    filename, addr = sdr_sock.recvfrom(400) # Nome do arquivo deve caber
+    filename, addr = sdr_sock.recvfrom(400)  # Nome do arquivo deve caber
     print("Nome do arquivo: {}".format(filename))
 
     if (os.path.isfile(filename)):
@@ -48,7 +46,7 @@ def main(args):
             envia_dados(teste, TIPO_DADO, sdr_sock, RCV_HOST, RCV_PORT, args.cwnd, args.PC)
             print("Enviou tudo")
     else:
-        print ("Arquivo inexistente")
+        print("Arquivo inexistente")
     return 0
 
 

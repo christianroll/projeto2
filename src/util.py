@@ -24,7 +24,6 @@ __authors__ = (
 __license__ = "GPL v3"
 __version__ = "1.0"
 
-
 # Receiver UDP port
 RCV_PORT = 9002
 RCV_HOST = ''
@@ -36,7 +35,6 @@ TIPO_EOF = 0b1111111100000000
 MSS = 500
 TIMEOUT = 5
 HEADER_LEN = 10  # Tamanho do cabecalho = num_seq(4) + checksum(4) + tipo(2)
-
 
 # Struct para pacotes
 Pacote = namedtuple("Pacote", ["num_seq", "chksum", "tipo", "data"])
@@ -128,11 +126,11 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc):
                 # print("Pronto pacote: {}".format(pr))
             # Janela cheia e nenhum ACK recebido antes de timeout
             else:
-                print ("Timeout. Seq num = {}".format(ultimo_sem_ack))
+                print("Timeout. Seq num = {}".format(ultimo_sem_ack))
                 sem_ack = 0
                 continue
-            # Confirma se o pacote é mesmo do servidor
-            # if addr[0] != host:
+                # Confirma se o pacote é mesmo do servidor
+                # if addr[0] != host:
                 # continue
             # Decodifica dados
             pkt = processa_pacote(dado)
