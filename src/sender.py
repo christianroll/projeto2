@@ -43,7 +43,7 @@ def main(args):
     if (os.path.isfile(filename)):
         with open(filename, mode="r") as sdr_file:
             teste = sdr_file.read()
-            envia_dados(teste, TIPO_DADO, sdr_sock, RCV_HOST, RCV_PORT, args.cwnd, args.PC)
+            envia_dados(teste, TIPO_DADO, sdr_sock, RCV_HOST, RCV_PORT, args.cwnd, args.PC, args.v)
             print("Enviou tudo")
     else:
         print("Arquivo inexistente")
@@ -56,8 +56,8 @@ if __name__ == "__main__":
     parser.add_argument('cwnd', help='Window size')
     parser.add_argument('PL', type=float, help='Packet Loss probability')
     parser.add_argument('PC', type=float, help='Packet Corruption probability')
-    parser.add_argument('--version', action='version',
-                        version='%(prog)s v' + __version__)
+    parser.add_argument('--version', action='version', version='%(prog)s v' + __version__)
+    parser.add_argument('-v', help="verbose", action="store_true")
     args = parser.parse_args()
 
     sys.exit(main(args))

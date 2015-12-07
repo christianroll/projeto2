@@ -106,7 +106,7 @@ def corrompe_pacote(pkt, probabilidade):
 
 
 # Envia pacotes utilizando a funcao envia_um_pacote
-def envia_pacotes(sock, pacotes, host, porta, window, pc):
+def envia_pacotes(sock, pacotes, host, porta, window, pc, verbose):
     ultimo_sem_ack = 0
     sem_ack = 0
     pr = 0
@@ -137,7 +137,8 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc):
             # Confirma se o pacote é mesmo um pacote ack
             if pkt.tipo != TIPO_ACK:
                 continue
-            print("Recebeu ack\n")
+
+            print("Recebeu ack do pacote: {}".format(pkt.num_seq))
             # Verifica o seq num para ver se é mesmo o pacote mandado
             if pkt.num_seq == ultimo_sem_ack:
                 ultimo_sem_ack += 1
@@ -147,8 +148,8 @@ def envia_pacotes(sock, pacotes, host, porta, window, pc):
 
 
 # Funcao que cria pacotes, envia os pacotes e manda fim de arquivo (EOF)
-def envia_dados(dados, tipo, sock, host, porta, window, pc):
-    envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window, pc)
+def envia_dados(dados, tipo, sock, host, porta, window, pc, verbose):
+    envia_pacotes(sock, cria_pacotes(dados, tipo), host, porta, window, pc, verbose)
     envia_sem_dados(sock, 0, host, porta, TIPO_EOF, pc)
 
 
