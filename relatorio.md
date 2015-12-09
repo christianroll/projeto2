@@ -28,7 +28,7 @@ A seguir será explicado as funções e sub-funções mais importantes!
 
 Temos duas macro funções que chamam funções menores:
 
-####envia_dados(dados, tipo, sock, host, porta, window, pc, verbose): 
+####envia_dados(...): 
 
 Chama a função (1) e depois a função (5) no receiver.py
 
