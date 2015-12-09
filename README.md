@@ -1,4 +1,4 @@
-# Redes de Computadores: Projeto 2 - Transferência Confiável de Dados Baseada em Janela com Repetição Seletiva ou Go-Back-N
+# Redes de Computadores: Projeto 2 - Transferência Confiável de Dados Baseada em Janela e no protocolo Go-Back-N
 
 Professor [Cesar Marcondes](https://github.com/cmarcond) - [DC UFSCar](http://www.dc.ufscar.br/)
 
